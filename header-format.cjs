@@ -73,7 +73,8 @@ function formatAuthors(document, article, slug) {
   });
 
   const header = document.createElement('div');
-  header.className = 'paper-author-header';
+  header.className = 'paper-author-header notranslate';
+  header.setAttribute('translate', 'no');
   header.setAttribute('data-header-source', spec.sourcePdf);
   authors.parentNode.insertBefore(header, authors);
   header.appendChild(authors);
@@ -185,6 +186,11 @@ function formatHeadings(document, article) {
     tag.setAttribute('data-original-label', original);
     // Keep a real space for accessible text and the text-only table of contents.
     tag.textContent = `${formatted} `;
+    // Protect numbering, not the section title or the word 'Appendix'.
+    if (!/^Appendix\s/.test(original)) {
+      tag.setAttribute('translate', 'no');
+      tag.classList.add('notranslate');
+    }
     heading.appendChild(title);
     heading.classList.add('paper-numbered-heading');
     count++;
@@ -202,6 +208,13 @@ function formatPaperHeader(document, article, paperSlug) {
     for (const attr of old.attributes) heading.setAttribute(attr.name, attr.value);
     while (old.firstChild) heading.appendChild(old.firstChild);
     old.replaceWith(heading);
+  }
+  // Only the standalone back-matter label loses its final punctuation.
+  // Keep source snapshots, body prose, and all other headings unchanged.
+  for (const heading of article.querySelectorAll('.ltx_title_acknowledgements')) {
+    if (heading.textContent === 'Acknowledgements.' && heading.childNodes.length === 1 && heading.firstChild.nodeType === 3) {
+      heading.firstChild.textContent = 'Acknowledgements';
+    }
   }
   const headingsFormatted = formatHeadings(document, article);
   const ids = [...article.querySelectorAll('[id]')].map(node => node.id);

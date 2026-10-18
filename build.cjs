@@ -18,6 +18,17 @@ const readerCssVersion = sha256(fs.readFileSync('reader.css')).slice(0,12);
 const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const copy = (from, to) => { fs.mkdirSync(path.dirname(to), {recursive:true}); fs.copyFileSync(from, to); };
 
+// Keep protected numbering in both navigation variants without copying IDs or
+// making the heading title itself untranslatable. Escape all source text.
+const navigationLabel = heading => {
+  const tag = [...heading.children].find(child => child.classList.contains('ltx_tag'));
+  const title = heading.querySelector('.paper-heading-text');
+  if (tag?.getAttribute('translate') === 'no' && title) {
+    return `<span translate="no" class="notranslate">${escape(tag.textContent.trim())}</span> ${escape(title.textContent.trim())}`;
+  }
+  return escape(heading.textContent.trim());
+};
+
 // No downloads during a build. The immutable source figures live in docs so
 // they are versioned once, and are already at their final static asset URLs.
 for (const paper of provenance) {
@@ -80,8 +91,8 @@ for (const paper of provenance) {
   const titleNode = article.querySelector('h1').cloneNode(true);
   for (const br of titleNode.querySelectorAll('br')) br.replaceWith(document.createTextNode(' '));
   const title = titleNode.textContent.replace(/\s+/g, ' ').trim();
-  const nav = [...article.querySelectorAll('h2')].filter(h => h.id || h.parentNode.id).map(h => `<a href="#${escape(h.id || h.parentNode.id)}">${escape(h.textContent.trim())}</a>`).join('');
-  const tocLinks = [...article.querySelectorAll('h2,h3')].filter(h=>h.id||h.parentNode.id).map(h=>`<a class="toc-level-${h.tagName.toLowerCase()}" href="#${escape(h.id||h.parentNode.id)}">${escape(h.textContent.trim())}</a>`).join('');
+  const nav = [...article.querySelectorAll('h2')].filter(h => h.id || h.parentNode.id).map(h => `<a href="#${escape(h.id || h.parentNode.id)}">${navigationLabel(h)}</a>`).join('');
+  const tocLinks = [...article.querySelectorAll('h2,h3')].filter(h=>h.id||h.parentNode.id).map(h=>`<a class="toc-level-${h.tagName.toLowerCase()}" href="#${escape(h.id||h.parentNode.id)}">${navigationLabel(h)}</a>`).join('');
   const tocMarkup = `<button type="button" class="reader-toc-trigger" id="reader-toc-open" aria-label="Open table of contents" aria-haspopup="dialog" aria-controls="reader-toc" aria-expanded="false" hidden><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M4 5h2M10 5h10M4 12h2M10 12h10M4 19h2M10 19h10" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button><dialog class="reader-toc-dialog" id="reader-toc" aria-labelledby="reader-toc-title"><div class="reader-toc-heading"><h2 id="reader-toc-title">Contents</h2><button type="button" id="reader-toc-close" autofocus>Close</button></div><nav aria-label="Table of contents"><a class="all-papers-link" href="index.html">← Research Portfolio</a>${tocLinks}</nav></dialog>`;
   const report = require('./math-renderer.cjs')(document,article,paper);
   if (report.mathCount !== paper.mathCount) throw new Error(`Math count changed: ${paper.slug}`);

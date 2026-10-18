@@ -70,6 +70,10 @@ for (const cssFile of ['assets/reader.css', 'assets/katex/katex.min.css']) {
 function scientificText(document) {
   const article = document.querySelector('article').cloneNode(true);
   for (const element of article.querySelectorAll('.rendered-math,.fallback-math,.semantic-unit,math,script,summary,img,object,.ltx_authors,.paper-author-header,.paper-affiliations,.paper-contact-notes,.ltx_title > .ltx_tag')) element.remove();
+  // The only approved source-text presentation change is this standalone label.
+  for (const heading of article.querySelectorAll('.ltx_title_acknowledgements')) {
+    if (heading.textContent === 'Acknowledgements.') heading.textContent = 'Acknowledgements';
+  }
   return article.textContent.replace(/\s+/g, ' ').trim();
 }
 for (const paper of provenance) {
@@ -89,9 +93,44 @@ for (const paper of provenance) {
   assert.equal(output.querySelector('.topbar a.home-link'), null, 'Reader Papers link removed');
   const acknowledgements = output.querySelector('.ltx_title_acknowledgements');
   assert.equal(acknowledgements.tagName, 'H2', 'Acknowledgements share section semantics');
-  assert.equal(acknowledgements.textContent, source.querySelector('.ltx_title_acknowledgements').textContent);
+  assert.equal(acknowledgements.textContent, 'Acknowledgements');
   assert.equal(acknowledgements.querySelector('.ltx_tag'), null, 'Acknowledgements remain unnumbered');
   assert(output.querySelector(`#reader-toc a[href="#${acknowledgements.parentNode.id}"]`), 'Acknowledgements are navigable');
+  const protectedAncestor = node => node.closest('[translate="no"],.notranslate');
+  for (const node of output.querySelectorAll('.ltx_personname,.paper-affiliation-text,.paper-contact-notes')) {
+    assert(protectedAncestor(node), `${paper.slug}: author metadata is protected`);
+  }
+  const authorHeader = output.querySelector('.paper-author-header');
+  assert.equal(authorHeader.getAttribute('translate'), 'no');
+  assert(authorHeader.classList.contains('notranslate'));
+  for (const heading of output.querySelectorAll('article h1,article h2,article h3,article h4,article h5,article h6')) {
+    assert(!protectedAncestor(heading), 'Heading titles remain translatable');
+    const label = heading.querySelector('.ltx_tag');
+    if (label && !/^Appendix\s/.test(label.textContent)) {
+      assert.equal(label.getAttribute('translate'), 'no');
+      assert(label.classList.contains('notranslate'));
+      const title = heading.querySelector('.paper-heading-text');
+      assert(title && !protectedAncestor(title));
+      const target = heading.id || heading.parentNode.id;
+      for (const link of output.querySelectorAll(`aside a[href="#${target}"],#reader-toc a[href="#${target}"]`)) {
+        assert(!protectedAncestor(link));
+        assert.equal(link.querySelector('[translate="no"].notranslate').textContent, label.textContent.trim());
+        assert.equal(normalized(link), normalized(heading));
+      }
+    }
+  }
+  for (const link of output.querySelectorAll(`aside a[href="#${acknowledgements.parentNode.id}"],#reader-toc a[href="#${acknowledgements.parentNode.id}"]`)) {
+    assert.equal(link.textContent, 'Acknowledgements');
+    assert(!protectedAncestor(link));
+  }
+  const abstractProse = document => {
+    const abstract = document.querySelector('.ltx_abstract').cloneNode(true);
+    for (const math of abstract.querySelectorAll('.rendered-math,.fallback-math,.semantic-unit,math')) math.remove();
+    return abstract.textContent.replace(/\s+/g, ' ').trim();
+  };
+  assert.equal(abstractProse(output), abstractProse(source), 'Abstract wording unchanged');
+  assert(!protectedAncestor(output.querySelector('.ltx_abstract')));
+  for (const prose of output.querySelectorAll('article .ltx_para')) assert(!protectedAncestor(prose), 'Body prose remains translatable');
   assert.equal(output.querySelectorAll('a.all-papers-link[href="index.html"]').length,3);
   for (const link of output.querySelectorAll('a.all-papers-link')) assert.equal(link.textContent, '← Research Portfolio');
   assert.equal(output.querySelector('#reader-toc nav').firstElementChild.textContent,'← Research Portfolio');
