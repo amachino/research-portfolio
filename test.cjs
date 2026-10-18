@@ -12,6 +12,10 @@ const audit = JSON.parse(fs.readFileSync('docs/math-audit.json', 'utf8'));
 const expectedPages = ['bswap.html', 'index.html', 'qubex.html'];
 assert.deepEqual(fs.readdirSync('docs').filter(f => f.endsWith('.html')).sort(), expectedPages, 'Only three public HTML pages');
 const documents = new Map(expectedPages.map(file => [file, parseHTML(fs.readFileSync('docs/' + file, 'utf8')).document]));
+const index = documents.get('index.html');
+assert.equal(index.querySelector('title').textContent, 'Research Portfolio · Akinori Machino');
+assert.equal(index.querySelector('.home-link').textContent, 'Research Portfolio');
+assert.equal(index.querySelector('main h1').textContent, 'Research Articles');
 const stats = [];
 const local = (url, base) => {
   if (/^(https?:|mailto:|tel:)/.test(url)) return null;
@@ -83,8 +87,14 @@ for (const paper of provenance) {
   for(const [i, author] of [...output.querySelectorAll('.paper-author-list .ltx_creator')].entries()) assert.deepEqual([...author.querySelectorAll('.paper-author-markers a')].map(a=>a.textContent), [...header.authors[i][1].map(String), ...(header.authors[i][2]?[header.authors[i][2]]:[])]);
   for(const h of output.querySelectorAll('.paper-numbered-heading')) assert(/[.:]$/.test(h.querySelector('.ltx_tag').textContent.trim()));
   assert.equal(output.querySelector('.topbar a.home-link'), null, 'Reader Papers link removed');
+  const acknowledgements = output.querySelector('.ltx_title_acknowledgements');
+  assert.equal(acknowledgements.tagName, 'H2', 'Acknowledgements share section semantics');
+  assert.equal(acknowledgements.textContent, source.querySelector('.ltx_title_acknowledgements').textContent);
+  assert.equal(acknowledgements.querySelector('.ltx_tag'), null, 'Acknowledgements remain unnumbered');
+  assert(output.querySelector(`#reader-toc a[href="#${acknowledgements.parentNode.id}"]`), 'Acknowledgements are navigable');
   assert.equal(output.querySelectorAll('a.all-papers-link[href="index.html"]').length,3);
-  assert.equal(output.querySelector('#reader-toc nav').firstElementChild.textContent,'← All papers');
+  for (const link of output.querySelectorAll('a.all-papers-link')) assert.equal(link.textContent, '← Research Portfolio');
+  assert.equal(output.querySelector('#reader-toc nav').firstElementChild.textContent,'← Research Portfolio');
   assert.equal(output.getElementById('reader-toc').tagName, 'DIALOG');
   assert.equal(output.querySelectorAll('#reader-toc-open').length, 1);
   assert.equal(output.querySelectorAll('#reader-toc nav a[href^="#"]').length, output.querySelectorAll('article h2,article h3').length);

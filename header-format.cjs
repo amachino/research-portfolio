@@ -195,6 +195,14 @@ function formatHeadings(document, article) {
 function formatPaperHeader(document, article, paperSlug) {
   const sourceIds = [...article.querySelectorAll('[id]')].map(node => node.id);
   formatAuthors(document, article, paperSlug);
+  // LaTeXML's acknowledgement h6 is a top-level back-matter section, not
+  // a sixth-level subsection. Preserve attributes, children, and anchors.
+  for (const old of article.querySelectorAll('h6.ltx_title_acknowledgements')) {
+    const heading = document.createElement('h2');
+    for (const attr of old.attributes) heading.setAttribute(attr.name, attr.value);
+    while (old.firstChild) heading.appendChild(old.firstChild);
+    old.replaceWith(heading);
+  }
   const headingsFormatted = formatHeadings(document, article);
   const ids = [...article.querySelectorAll('[id]')].map(node => node.id);
   const outputIds = new Set(ids);
