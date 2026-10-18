@@ -14,7 +14,7 @@ assert.deepEqual(fs.readdirSync('docs').filter(f => f.endsWith('.html')).sort(),
 const documents = new Map(expectedPages.map(file => [file, parseHTML(fs.readFileSync('docs/' + file, 'utf8')).document]));
 const index = documents.get('index.html');
 assert.equal(index.querySelector('title').textContent, 'Research Portfolio · Akinori Machino');
-assert.equal(index.querySelector('.home-link').textContent, 'Research Portfolio');
+assert.equal(index.querySelector('.home-link').textContent, 'Akinori Machino');
 assert.equal(index.querySelector('main h1').textContent, 'Research Articles');
 const stats = [];
 const local = (url, base) => {
