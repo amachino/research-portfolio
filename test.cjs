@@ -193,3 +193,6 @@ for (const [paper,singles,wides] of [['bswap',15,3],['qubex',15,4]]) {
  assert.equal(doc.querySelectorAll('figure.figure-pair').length,paper==='bswap'?3:0);
  assert(!doc.querySelector('.figure-float'));
 }
+
+// Static responsive thresholds; rendered viewport QA is a separate check.
+require('./layout-test.cjs');

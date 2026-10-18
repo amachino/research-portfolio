@@ -73,18 +73,22 @@ article .katex{text-align-last:auto}
 
 /* Match KaTeX relation spacing when an aligned RHS is a separate math input. */
 .ltx_eqn_table .relation-start > .katex{padding-left:.2778em}
-/* Desktop wraps use the original PDF's figure span classification. */
-@media(min-width:1200px){
+/* Wrap only when the article can leave about 21.6 em for adjacent prose:
+   54% of (40 em + 60 px), minus the 30 px figure gap. The 420 px
+   figure cap only increases that remainder. em uses this container's font.
+   Unsupported container queries fall back to ordinary stacked figures. */
+article{container-name:reader;container-type:inline-size}
+@container reader (min-width:calc(40em + 60px)){
   article figure.figure-single{float:right;width:46%;max-width:420px;margin:8px 0 24px 30px;padding:16px;clear:right}
   article figure.figure-wide{float:none;width:auto;max-width:none;clear:both}
   article > section,article > .ltx_appendix{display:flow-root}
   article h3,article h4{clear:none;display:flow-root}
 }
-@media(min-width:1200px){
+@container reader (min-width:calc(40em + 60px)){
   article figure.figure-pair{float:none;width:auto;max-width:none;clear:none;margin:0;padding:0;border:0;background:transparent;overflow:visible}
 }
 
-@media(min-width:1200px){article .figure-pair .ltx_flex_figure,article .figure-pair .ltx_flex_cell{display:block;float:none;clear:none;overflow:visible;width:auto}}
+@container reader (min-width:calc(40em + 60px)){article .figure-pair .ltx_flex_figure,article .figure-pair .ltx_flex_cell{display:block;float:none;clear:none;overflow:visible;width:auto}}
 /* Visible original-paper author and affiliation mapping. */
 .paper-author-header{margin:0 0 1.6rem}.paper-author-list{font-family:var(--reader-text-font);font-size:.88em;line-height:1.65;gap:.15em .65em;margin:0 0 .65rem}.paper-author-list .ltx_creator{white-space:nowrap}.paper-author-markers{font-size:.68em;line-height:0;margin-left:.08em;white-space:nowrap}.paper-author-markers a{color:inherit;text-decoration:none}.paper-author-markers a:hover{text-decoration:underline}.paper-affiliations{font-size:max(12px,.76em);line-height:1.45;font-style:italic}.paper-affiliation,.paper-contact-note{display:grid;grid-template-columns:1.1em minmax(0,1fr);column-gap:.25em;align-items:baseline}.paper-affiliation+.paper-affiliation{margin-top:.14em}.paper-note-marker{font-size:.72em;line-height:1;align-self:start;padding-top:.12em}.paper-contact-notes{font-size:max(12px,.7em);line-height:1.5;margin-top:.65rem;color:var(--muted)}.paper-contact-note .ltx_contact{min-width:0;overflow-wrap:anywhere}.paper-source-anchor{display:inline}.paper-author-markers a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 /* A separate label column keeps wrapped titles aligned after the number. */
@@ -121,7 +125,7 @@ footer a.all-papers-link{display:inline-flex;align-items:center;min-height:48px;
 .notice{border-left-color:var(--control-border)}
 /* Original single-column tables share figure placement, with automatic columns. */
 figure.ltx_table .ltx_tabular{width:100%;table-layout:auto}
-@media(min-width:1200px){
+@container reader (min-width:calc(40em + 60px)){
   article figure.table-single{float:right;width:46%;max-width:420px;margin:8px 0 24px 30px;padding:16px;clear:right}
   article figure.table-wide{float:none;width:auto;max-width:none;clear:both}
 }
