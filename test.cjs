@@ -21,7 +21,7 @@ assert.equal(cards.length, 3);
 for (const card of cards) {
   assert.equal(card.querySelector('.paper-authors').getAttribute('translate'), 'no');
   assert.equal(card.querySelector('.paper-authors strong').textContent, 'Akinori Machino');
-  assert.match(card.querySelector('.paper-authors').textContent, /et al\./);
+  assert(!card.querySelector('.paper-authors').textContent.includes('et al.'), 'All authors are shown');
   assert.equal(card.querySelector('time').getAttribute('datetime'), '2026');
   assert.match(card.querySelector('.paper-meta').textContent, /arXiv preprint|Physical Review Research/);
   assert.equal(card.querySelectorAll('p').length, 3, 'Bibliography only; no summary');
@@ -30,6 +30,70 @@ assert.equal(cards[0].querySelectorAll('a[href^="https://doi.org/"]').length, 0,
 assert.equal(cards[1].querySelector('a[href^="https://doi.org/"]').getAttribute('href'), 'https://doi.org/10.48550/arXiv.2606.13010');
 assert.equal(cards[2].querySelector('a[href^="https://doi.org/"]').getAttribute('href'), 'https://doi.org/10.1103/xw1s-dt16');
 assert.match(cards[2].querySelector('.paper-authors').textContent, /^Ryo Matsuda, Ryutaro Ohira/);
+const expectedAuthorLists = [
+  [
+    "Akinori Machino",
+    "Kazuhisa Ogawa",
+    "Yuto Ikegai",
+    "Takafumi Miyanaga",
+    "Koichiro Ban",
+    "Nilton F. G. Filho",
+    "Hidehisa Shiomi",
+    "Toshi Sumida",
+    "Shuhei Tamate",
+    "Yutaka Tabuchi",
+    "Yasunobu Nakamura",
+    "Makoto Negoro"
+  ],
+  [
+    "Akinori Machino",
+    "Kazuhisa Ogawa",
+    "Takefumi Miyoshi",
+    "Hidehisa Shiomi",
+    "Shinichi Morisaka",
+    "Ryo Matsuda",
+    "Nilton F. G. Filho",
+    "Koichiro Ban",
+    "Takafumi Miyanaga",
+    "Keisuke Koike",
+    "Ryutaro Ohira",
+    "Toshi Sumida",
+    "Yoshinori Kurimoto",
+    "Yuuya Sugita",
+    "Yosuke Ito",
+    "Yasunari Suzuki",
+    "Peter A. Spring",
+    "Shiyu Wang",
+    "Hiroto Mukai",
+    "Arvind Mamgain",
+    "Shuhei Tamate",
+    "Yutaka Tabuchi",
+    "Yasunobu Nakamura",
+    "Makoto Negoro"
+  ],
+  [
+    "Ryo Matsuda",
+    "Ryutaro Ohira",
+    "Toshi Sumida",
+    "Hidehisa Shiomi",
+    "Akinori Machino",
+    "Shinichi Morisaka",
+    "Keisuke Koike",
+    "Takefumi Miyoshi",
+    "Yoshinori Kurimoto",
+    "Yuuya Sugita",
+    "Yosuke Ito",
+    "Yasunari Suzuki",
+    "Peter A. Spring",
+    "Shiyu Wang",
+    "Shuhei Tamate",
+    "Yutaka Tabuchi",
+    "Yasunobu Nakamura",
+    "Kazuhisa Ogawa",
+    "Makoto Negoro"
+  ]
+];
+cards.forEach((card, i) => assert.equal(card.querySelector('.paper-authors').textContent, expectedAuthorLists[i].join(', '), 'Complete original author order'));
 const stats = [];
 const local = (url, base) => {
   if (/^(https?:|mailto:|tel:)/.test(url)) return null;
