@@ -1,4 +1,6 @@
-# Scientific paper reader
+# Research portfolio
+
+Personal research site: [published portfolio](https://amachino.github.io/research-portfolio/). The shared reader is planned as a separate project; extraction and its public name are not yet decided.
 
 Start/resume work: [STATUS](STATUS.md). Product direction: [PRODUCT](PRODUCT.md), [ROADMAP](ROADMAP.md), [ARCHITECTURE](ARCHITECTURE.md). Individual tasks and progress live in the maintainer's task tracker; draft PRs review code changes.
 

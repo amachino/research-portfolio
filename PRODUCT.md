@@ -1,6 +1,6 @@
 # Product direction
 
-**Working codename: Leaf (singular).** Keep this as an internal development codename through the Chrome-extension phase. Public-facing names should plainly describe the reading tool; a public extension name has not been selected. Check name collisions and possible confusion with an official arXiv product before choosing one. No trademark clearance is claimed. Repository paths and the minimal reading interface remain unchanged.
+**Working codename: Leaf (singular).** Keep this as an internal development codename through the Chrome-extension phase. Public-facing names should plainly describe the reading tool; a public extension name has not been selected. Check name collisions and possible confusion with an official arXiv product before choosing one. No trademark clearance is claimed. The minimal reading interface remains unchanged. The personal site uses the research-portfolio repository; the shared reader will be separated in a later bounded step.
 
 A quiet, fast, source-faithful scientific reader that works across papers and devices. This is an independent project; no arXiv partnership or official adoption is claimed.
 

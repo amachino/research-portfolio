@@ -40,3 +40,7 @@ An extension, web library, and native clients should reuse the import/document/r
 ## Changes to decisions
 
 Record a dated amendment with rationale, alternatives, evidence, and affected issues/PRs. Do not overwrite historical limitations to make an earlier release appear more capable.
+
+### A6. Personal site and shared reader boundary — accepted direction
+
+`research-portfolio` is the personal research site. A separate future repository will own reusable reader/import modules once extraction is justified by the corpus milestone. Its public name is undecided; Leaf remains the internal working codename. This migration keeps the current reproducible implementation together and does not claim that a package split has already happened. Existing package and browser-storage keys remain unchanged for compatibility.

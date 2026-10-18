@@ -4,9 +4,9 @@ Last documented checkpoint: **2026-10-18**. This file describes the checkpoint, 
 
 ## Verified baseline
 
-- Repository: [amachino/paper-atelier](https://github.com/amachino/paper-atelier)
-- Site: [published reader](https://amachino.github.io/paper-atelier/)
-- Functional baseline commit: [`8272de93d6b74360560286a6b2d9f6e78d2af1ae`](https://github.com/amachino/paper-atelier/commit/8272de93d6b74360560286a6b2d9f6e78d2af1ae)
+- Repository: [amachino/research-portfolio](https://github.com/amachino/research-portfolio)
+- Site: [published reader](https://amachino.github.io/research-portfolio/)
+- Functional baseline commit: [`8272de93d6b74360560286a6b2d9f6e78d2af1ae`](https://github.com/amachino/research-portfolio/commit/8272de93d6b74360560286a6b2d9f6e78d2af1ae)
 - Two papers, 1,220 source math expressions: 1,217 KaTeX renders and 3 semantic HTML units; no current native fallbacks. Eleven generic compatibility repairs and one isolated legacy layout adapter.
 - Automated baseline: `npm test` passed, including whole-site preservation/link/asset checks, 55 compatibility tests, and 26 semantic-unit fixtures. Commands and toolchain are maintained in README/package metadata.
 - Browser evidence: cloud Chrome at narrow 320/390 px and desktop 1280 px, with prior wider-layout checks. Serif/Sans and Light/Dark, local table overflow, and upright units checked. Safari/Firefox and physical-device testing are not claimed.
@@ -31,3 +31,7 @@ Next bounded milestone: the unfamiliar third-paper local audit in [ROADMAP.md](R
 ## Documentation ownership
 
 Avoid duplicate sources of truth: README = run/build/rights; PRODUCT = goals/boundaries; ROADMAP = stages/gates; ARCHITECTURE = contracts/decisions; STATUS = resume checkpoint. Link to detailed evidence and issues rather than copying their mutable status into every file.
+
+## Repository migration (2026-10-18)
+
+The public repository was copied to `amachino/research-portfolio` with its Git revision history using GitHub Importer; the imported head was `652e5f393f1b64df26dab326db310444f729a010` (28 commits). The old `paper-atelier` repository is retained, not deleted. The new portfolio is the canonical development/publication target; old URL compatibility is not a requirement. Pages serves `main:/docs`. The reusable reader remains in this tree temporarily; its later extraction is a separate scoped task, not a completed split.
