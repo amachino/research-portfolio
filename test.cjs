@@ -151,6 +151,7 @@ assert.deepEqual(audit.total, {math:1220, converted:1217, repaired:12, nativeFal
 assert.equal(repairs.length, 12);
 assert.deepEqual(audit.papers.flatMap(p => p.normalizations.map(f => f.id)), ['S4.T1.m8','S4.T1.m10','A3.SS4.p1.m4']);
 const readerCss = fs.readFileSync('docs/assets/reader.css','utf8');
+assert(readerCss.includes('flex:none;min-width:44px;min-height:48px;padding:0 10px'), 'Compact equal-padding header controls retain separate touch targets');
 assert(readerCss.includes('cite.ltx_cite{font-style:normal}'), 'Numeric citation labels upright');
 assert(readerCss.includes('@media(max-width:350px){article section > .ltx_para > p.ltx_p{text-align:start}}'), 'Smallest viewport prose start-aligned');
 assert(readerCss.includes('p.ltx_p{text-align:justify;'), 'Desktop prose justified');
