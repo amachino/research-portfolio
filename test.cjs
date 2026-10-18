@@ -41,7 +41,7 @@ for (const [file, document] of documents) {
       }
     }
   }
-  for (const script of document.querySelectorAll('script')) assert(['assets/anchor.js','assets/settings.js','assets/toc.js'].includes(script.getAttribute('src').split('?')[0]), `${file}: unexpected script`);
+  for (const script of document.querySelectorAll('script')) assert(['assets/anchor.js','assets/settings.js','assets/toc.js','assets/header-scroll.js'].includes(script.getAttribute('src').split('?')[0]), `${file}: unexpected script`);
   assert.equal(document.querySelectorAll('script[src^="assets/settings.js"]').length, 1, `${file}: reading preferences script`);
   assert.equal(document.getElementById('reader-settings').tagName.toLowerCase(), 'dialog', `${file}: native settings dialog`);
   assert.equal(document.querySelector('.reader-settings-help').textContent,'Preferences are saved in this browser.');
@@ -235,3 +235,5 @@ for (const [paper,singles,wides] of [['bswap',15,3],['qubex',15,4]]) {
 
 // Static responsive thresholds; rendered viewport QA is a separate check.
 require('./layout-test.cjs');
+
+require('./header-scroll-test.cjs');

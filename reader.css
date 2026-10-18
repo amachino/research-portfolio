@@ -135,3 +135,12 @@ figure.table-dense .ltx_tabular td,figure.table-dense .ltx_tabular th{padding-in
 /* Semantically marked simple units render upright in the reader's text font. */
 .semantic-unit-text{font-family:inherit;font-style:normal;white-space:nowrap}
 .semantic-unit-source[hidden]{display:none!important}
+/* Sticky stays in normal flow: hiding changes neither article position nor height.
+   Use top rather than transform so native dialogs keep viewport positioning. */
+@media(max-width:900px){
+  html:has(.reader-topbar){scroll-padding-top:calc(var(--reader-header-height,52px) + 8px)}
+  .reader-topbar{position:sticky;top:0;z-index:20;transition:top .18s ease-out;padding-top:calc(2px + env(safe-area-inset-top))}
+  .reader-topbar.reader-header-hidden{top:calc(-1 * var(--reader-header-height,52px) - 1px)}
+  .reader-topbar:focus-within,.reader-topbar:has(dialog[open]){top:0;transition:none}
+}
+@media(prefers-reduced-motion:reduce){.reader-topbar{transition:none}}

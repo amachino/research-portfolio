@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 process.chdir(path.join(__dirname, '..'));
-const files = ['.gitignore','.nvmrc','README.md','PRODUCT.md','ROADMAP.md','ARCHITECTURE.md','STATUS.md','NOTICE.md','package.json','package-lock.json','build.cjs','math-renderer.cjs','math-compat.cjs','math-compat.test.cjs','legacy-math-adapter.cjs','semantic-units.cjs','semantic-units-test.cjs','header-format.cjs','test.cjs','reader.css','anchor.js','toc.js','settings.js','settings-test.cjs','settings.html','index.html','scripts/manifest.cjs'];
+const files = ['.gitignore','.nvmrc','README.md','PRODUCT.md','ROADMAP.md','ARCHITECTURE.md','STATUS.md','NOTICE.md','package.json','package-lock.json','build.cjs','math-renderer.cjs','math-compat.cjs','math-compat.test.cjs','legacy-math-adapter.cjs','semantic-units.cjs','semantic-units-test.cjs','header-format.cjs','test.cjs','reader.css','anchor.js','toc.js','header-scroll.js','header-scroll-test.cjs','settings.js','settings-test.cjs','settings.html','index.html','scripts/manifest.cjs'];
 function walk(dir) { for (const entry of fs.readdirSync(dir, {withFileTypes:true})) {const name = `${dir}/${entry.name}`; if(entry.isSymbolicLink()) throw new Error(`No symlinks allowed: ${name}`); if(entry.isDirectory()) walk(name); else files.push(name); } }
 walk('sources'); walk('docs');
 const entries = files.sort().map(file => {const bytes = fs.readFileSync(file);return {path:file,bytes:bytes.length,sha256:crypto.createHash('sha256').update(bytes).digest('hex'),encoding:/\.(woff2|png)$/.test(file)?'base64':'utf-8'};});

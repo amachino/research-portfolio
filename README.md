@@ -63,3 +63,12 @@ Original PDF table rules classify five tables as single-column (bSWAP1–3, Qube
 The mathematics pipeline is isolated in math-renderer.cjs: generic structural compatibility recognition → optional isolated legacy layout adapter → KaTeX → conservative semantic-unit normalization for unsupported input → original MathML fallback with diagnostics. math-compat.cjs validates both TeX and MathML before accepting a rule. semantic-units.cjs requires LaTeXML ltx_unit semantics and a supported SI grammar; neither module branches on paper names, IDs, or exact formula strings. Decimal quantities and simple units are supported; arbitrary variables, products, powers, unsupported units, and complex expressions are declined. Tests cover renamed IDs, other SI units/quantities, negative cases, unchanged source DOM, and visual-tree equivalence for the eleven former compatibility fixes.
 
 Remaining content-specific configuration is explicit: sources/legacy-math-repairs.json has one bSWAP cases layout record, guarded by its exact source and applied only through legacy-math-adapter.cjs. sources/math-repairs.json retains twelve old records as regression fixtures, not production recognition rules. Figure/table original-column classifications and author-affiliation mappings are source-document metadata. This architecture does not claim arbitrary LaTeX support; the input remains an arXiv HTML snapshot. Unknown expressions retain their original MathML with diagnostics. The public reading interface contains no renderer counter banner.
+
+On individual paper pages at widths up to 900 px, the header stays within reach:
+32 px of downward scroll hides it, and 8 px upward reveals it again. Near the
+page top, with keyboard focus in the header, or while either reader dialog is
+open, it remains visible. Sticky positioning reserves its original flow space;
+only its top offset changes, so article layout does not jump. Anchor offsets
+track measured header height, and reduced-motion users get no slide animation.
+Desktop navigation and the portfolio home page retain their existing behavior.
+Without JavaScript, the mobile header remains sticky and visible.
