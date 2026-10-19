@@ -477,13 +477,43 @@
           "space": "0.2778em"
         }
       ]
+    },
+    {
+      "paper": "matsuda",
+      "source": "https://arxiv.org/html/2501.10710v2",
+      "mathCount": 204,
+      "converted": 202,
+      "repaired": 0,
+      "nativeFallbacks": 2,
+      "semanticUnits": 0,
+      "normalizations": [],
+      "repairs": [],
+      "fallbacks": [
+        {
+          "id": "p8.m9",
+          "originalTex": "{\\color[rgb]{0,0,0}\\Delta_{10}}/2\\pi=30",
+          "renderInput": "{\\color[rgb]{0,0,0}\\Delta_{10}}/2\\pi=30",
+          "reason": "KaTeX parse error: Invalid color: '[' at position 8: {\\color[̲rgb]{0,0,0}\\Del…",
+          "semanticUnitReason": "not-simple-decimal-quantity",
+          "compatibilityReason": "unsupported-presentation-attributes"
+        },
+        {
+          "id": "p8.m10",
+          "originalTex": "{\\color[rgb]{0,0,0}\\Delta_{10}}=\\omega_{1}-\\omega_{0}",
+          "renderInput": "{\\color[rgb]{0,0,0}\\Delta_{10}}=\\omega_{1}-\\omega_{0}",
+          "reason": "KaTeX parse error: Invalid color: '[' at position 8: {\\color[̲rgb]{0,0,0}\\Del…",
+          "semanticUnitReason": "not-simple-decimal-quantity",
+          "compatibilityReason": "unsupported-presentation-attributes"
+        }
+      ],
+      "layoutAdjustments": []
     }
   ],
   "total": {
-    "math": 1220,
-    "converted": 1217,
+    "math": 1424,
+    "converted": 1419,
     "repaired": 12,
-    "nativeFallbacks": 0,
+    "nativeFallbacks": 2,
     "semanticUnits": 3
   }
 }

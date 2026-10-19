@@ -147,3 +147,10 @@ figure.table-dense .ltx_tabular td,figure.table-dense .ltx_tabular th{padding-in
 
 /* Compact bibliography on the portfolio index; names retain native spelling. */
 .paper-list .paper-authors{margin:0 0 5px}.paper-list .paper-meta{margin:0;color:var(--muted);font-size:14px}.paper-list .paper-links{margin:10px 0 0;display:flex;flex-wrap:wrap;align-items:center;gap:0 10px}.paper-list .paper-links a{display:inline-block;padding-block:6px}
+
+/* Preserve source MathML; adapt only explicit black fallback glyphs in dark mode. */
+:root[data-reader-theme="dark"] .fallback-math [mathcolor="#000000"]{color:var(--ink)}
+/* Protected numbering stays intact beside wrapping mobile TOC labels. */
+.reader-toc-dialog nav a>.notranslate{flex:none;white-space:nowrap;margin-right:.35em;align-self:flex-start}
+
+.edition-note{hyphens:none}

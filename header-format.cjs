@@ -1,7 +1,7 @@
 'use strict';
 
 // Author markers and institution order were checked against page 1 of each
-// immutable arXiv v1 PDF, including the contact symbols. Do not infer a new
+// immutable arXiv PDF version, including the contact symbols. Do not infer a new
 // numbering scheme from a changed HTML snapshot: fail instead for review.
 const institutions = {
   engineeringScience: 'Graduate School of Engineering Science, The University of Osaka, Toyonaka, Osaka, Japan',
@@ -13,6 +13,7 @@ const institutions = {
   tokyo: 'Graduate School of Engineering, The University of Tokyo, Bunkyo-ku, Tokyo, Japan'
 };
 const manifests = {
+  matsuda: require('./sources/matsuda-header.json'),
   bswap: {
     sourcePdf: 'https://arxiv.org/pdf/2610.21936v1',
     affiliations: ['engineeringScience', 'quantumBiology', 'informationScience', 'quel', 'riken', 'tokyo'].map(key => institutions[key]),
@@ -68,8 +69,11 @@ function formatAuthors(document, article, slug) {
     const emails = [...node.querySelectorAll('.ltx_role_email')];
     if (emails.length !== (email ? 1 : 0)) fail(slug, `${name}: contact count changed`);
     if (email && (emails[0].querySelector('a')?.getAttribute('href') !== `mailto:${email}` || contentWithoutLabel(emails[0]) !== email)) fail(slug, `${name}: contact changed`);
-    if ([...node.querySelectorAll('.ltx_contact')].some(contact => !affiliations.includes(contact) && !emails.includes(contact))) fail(slug, `${name}: unrecognized contact type`);
-    return {node, name, numbers, symbol, email, affiliations, contact: emails[0]};
+    const thanks = [...node.querySelectorAll('.ltx_role_thanks')];
+    const expectsThanks = spec.thanks?.authorIndices.includes(index);
+    if (thanks.length !== (expectsThanks ? 1 : 0) || thanks.some(n => contentWithoutLabel(n) !== spec.thanks.text)) fail(slug, `${name}: contribution note changed`);
+    if ([...node.querySelectorAll('.ltx_contact')].some(contact => !affiliations.includes(contact) && !emails.includes(contact) && !thanks.includes(contact))) fail(slug, `${name}: unrecognized contact type`);
+    return {node, name, numbers, symbol, email, affiliations, contact: emails[0], thanks: thanks[0]};
   });
 
   const header = document.createElement('div');
@@ -141,6 +145,18 @@ function formatAuthors(document, article, slug) {
       contacts.appendChild(row);
       addRef(record.symbol, row.id, `Contact for ${record.name}`);
     }
+    if (record.thanks) {
+      const row = document.createElement('div');
+      row.className = 'paper-contact-note';
+      row.id = `${slug}-contribution-${records.indexOf(record) + 1}`;
+      const marker = document.createElement('sup');
+      marker.textContent = spec.thanks.symbol;
+      row.appendChild(marker);
+      for (const label of record.thanks.querySelectorAll('.ltx_contact_name')) removeKeepingIds(label, row, document);
+      row.appendChild(record.thanks);
+      contacts.appendChild(row);
+      addRef(spec.thanks.symbol, row.id, `Contribution of ${record.name}`);
+    }
     record.node.querySelector('.ltx_personname').after(refs);
     for (const notes of [...record.node.querySelectorAll('.ltx_author_notes')]) {
       // Duplicate affiliation entries are replaced by the canonical rows. Keep
@@ -174,7 +190,7 @@ function formatHeadings(document, article) {
     // different subsection labels; changing those would change references.
     let formatted;
     if (/^Appendix\s+[A-Z](?:\.|:)?$/.test(original)) formatted = original.replace(/[.:]?$/, ':');
-    else if (/^(?:[IVXLCDM]+|[A-Z]|\d+)(?:\.\d+)*\.?$/.test(original)) formatted = original.replace(/\.?$/, '.');
+    else if (/^(?:[IVXLCDM]+|S\d+|[A-Z]|\d+)(?:\.\d+)*\.?$/.test(original)) formatted = original.replace(/\.?$/, '.');
     else continue;
     const children = [...heading.childNodes];
     const index = children.indexOf(tag);

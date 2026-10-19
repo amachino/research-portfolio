@@ -1751,6 +1751,124 @@
         "A1.F16",
         "A2.F17"
       ]
+    },
+    "matsuda": {
+      "arxiv_id": "2501.10710v2",
+      "pdf_url": "https://arxiv.org/pdf/2501.10710v2",
+      "source_html_sha256": "dc421edbd94f0fee3cb700300f9b23efd32de41d5be9481ff8bf823e32daec76",
+      "classification_basis": "Original PDF image bounding boxes and table extents; supplementary pages are single-column full-page.",
+      "figures": [
+        {
+          "html_id": "S0.F1",
+          "classification": "single-column",
+          "pdf_page": 2,
+          "caption": "Figure 1: \n(a) Frequency-multiplexed qubit-control architecture. Multiple qubits can be manipulated using a single microwave line.\n(b) Qubit-frequency spacing wider than the bandwidth of the drive pulse. The off-resonant excitation is mitigated.\n(c) Narrow qubit-frequency spacing. The bandwidth of the drive pulse overlaps with the transition frequencies of non-target qubits.\n(d) Selective excitation pulse (SEP).\nThe frequency profile of the SEP exhibits null points in the frequency-domain amplitude at the desired frequency.\nAligning these null points with the frequencies of non-target qubits effectively mitigates unwanted excitations.",
+          "confidence": "high",
+          "image_bounds_pt": [
+            55.04,
+            52.08,
+            298.05,
+            181.33
+          ]
+        },
+        {
+          "html_id": "S0.F2",
+          "classification": "single-column",
+          "pdf_page": 2,
+          "caption": "Figure 2: \n(a) Frequency profiles of the control pulses. The dashed curve shows the Gaussian profile, the solid curve represents the profile SSEP​(ω)S_{\\mathrm{SEP}}(\\omega), and the dot-dashed curve corresponds to the profile SExp​(ω)S_{\\mathrm{Exp}}(\\omega). Detailed parameters used to plot the frequency profiles are provided in the main text.\n(b) Real part sxs_{x} and (c) imaginary part sys_{y} of the waveforms obtained from the frequency profiles shown in (a).",
+          "confidence": "high",
+          "image_bounds_pt": [
+            319.08,
+            52.08,
+            560.02,
+            220.68
+          ]
+        },
+        {
+          "html_id": "S0.F3",
+          "classification": "two-column",
+          "pdf_page": 3,
+          "caption": "Figure 3: \nRabi oscillations observed when applying repeated Xπ/2X_{\\pi/2} gates using Gaussian pulses (crosses) and the SEPs (dots).\n(a)–(c) Measured results for Q0, (d)–(f) for Q1, and (g)–(i) for Q2.\nEach data point represents the average of five experiments, with error bars indicating 1σ\\sigma confidence intervals.\nIn insets, the target qubit is shown in gray, and the non-target qubits are shown in white.\nThe detector icon indicates the qubit that was measured to obtain the results.",
+          "confidence": "high",
+          "image_bounds_pt": [
+            67.1,
+            52.07,
+            548.99,
+            266.35
+          ]
+        },
+        {
+          "html_id": "S0.F4",
+          "classification": "two-column",
+          "pdf_page": 4,
+          "caption": "Figure 4: \nRandomized benchmarking of single-qubit gates for Gaussian pulses (crosses) and the SEPs (dots).\n(a)–(c) Measured results for Q0, (d)–(f) for Q1, and (g)–(i) for Q2.\nData points represent the average of 50 different random Clifford sequences, with shaded regions indicating the standard deviation across the 50 results for each Clifford-gate number.\nThe Xπ/2X_{\\pi/2} gate was calibrated in the SEP technique.\nThe SEP technique achieved an average gate fidelity comparable to that of Gaussian pulses.",
+          "confidence": "high",
+          "image_bounds_pt": [
+            67.1,
+            52.07,
+            548.99,
+            266.59
+          ]
+        },
+        {
+          "html_id": "S1.F1",
+          "classification": "two-column",
+          "pdf_page": 7,
+          "caption": "Figure S1: \n\nNumerical simulation of the excitation probability PeP_{\\textrm{e}} of the target qubit Q0 and the non-target qubit Q1 after an Xπ/2X_{\\pi/2} gate, shown as a function of the pulse duration TT and detuning Δ1\\Delta_{1}.\n(a)–(c) Results for Q0 using three waveform types: (a) Gaussian, (b) sasym​(t)s_{\\mathrm{asym}}(t), and (c) ssym​(t)s_{\\mathrm{sym}}(t).\n(d)–(f) Results for Q1, using the same waveform types as in (a)–(c).",
+          "confidence": "high",
+          "image_bounds_pt": [
+            67.1,
+            52.07,
+            548.99,
+            465.51
+          ]
+        },
+        {
+          "html_id": "S2.F2",
+          "classification": "two-column",
+          "pdf_page": 8,
+          "caption": "Figure S2: \nFrequency profiles and time-domain signals used to implement the Xπ/2X_{\\pi/2} gates.\n(a)–(c) Frequency profiles for the target qubits Q0, Q1,{}_{1}, and  Q2, respectively. The dashed and solid curves show the results for Gaussian pulses and the SEPs, respectively.\n(d)–(i) Time-domain signals derived from each frequency profile: (d)–(f) real parts sxs_{x} and (g)–(i) imaginary parts sys_{y} of the corresponding waveforms.\nThe shaded regions indicate truncated segments of the waveforms and the non-shaded regions indicate the waveforms used in the experiments.",
+          "confidence": "high",
+          "image_bounds_pt": [
+            95.45,
+            204.23,
+            520.67,
+            569.03
+          ]
+        },
+        {
+          "html_id": "S3.F3",
+          "classification": "two-column",
+          "pdf_page": 10,
+          "caption": "Figure S3: \n\nAnalysis of the waveform discontinuity.\n(a) Frequency profiles of the SEP given by Eq. (S3), with the amplitudes normalized so that s⁡(t)s(t) satisfies the area condition ∫0Ts⁡(t)​𝑑t=π/2\\int^{T}_{0}s(t)\\,dt=\\pi/2. Here, s⁡(t)s(t) is obtained via the inverse Fourier transform of S⁡(ω)S(\\omega) in (a).\n(b),(c) Time-domain signals: real part sx​(t)s_{x}(t) and imaginary part sy​(t)s_{y}(t) of the waveform s⁡(t)s(t).\n(d) Value of sx​(t=0)s_{x}(t=0) as a function of σ\\sigma, showing the discontinuity due to the truncation.\n(e) Numerical results of Pe​(Pf)P_{\\textrm{e}}\\,(P_{\\textrm{f}}), the probability of projecting the non-target qubit into the first (second) excited state |e⟩⁡(|f⟩)\\ket{\\textrm{e}}\\,(\\ket{\\textrm{f}}).",
+          "confidence": "high",
+          "image_bounds_pt": [
+            67.1,
+            295.75,
+            548.98,
+            592.25
+          ]
+        },
+        {
+          "html_id": "S4.F4",
+          "classification": "two-column",
+          "pdf_page": 11,
+          "caption": "Figure S4: \nWiring schematic of the experimental setup.\nBackground color indicates the temperature at each stage.\nThe setup allows pulses driving the target qubit to interact with non-target qubits via a signal divider.",
+          "confidence": "high",
+          "image_bounds_pt": [
+            180.49,
+            207.72,
+            435.62,
+            638.12
+          ]
+        }
+      ],
+      "groups": [],
+      "pdf_sha256": "01656457db23583a6786c5ddcb6d50d79d0cda25ef95d32323e2dda415d7d248",
+      "visual_verification": {
+        "inspected": false,
+        "note": "PDF geometry extracted programmatically; browser layout review pending."
+      }
     }
   }
 }

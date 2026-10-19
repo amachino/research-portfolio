@@ -9,10 +9,22 @@ const sha256 = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 const provenance = JSON.parse(fs.readFileSync('sources/provenance.json', 'utf8'));
 const repairs = JSON.parse(fs.readFileSync('sources/math-repairs.json', 'utf8'));
 const audit = JSON.parse(fs.readFileSync('docs/math-audit.json', 'utf8'));
-const expectedPages = ['bswap.html', 'index.html', 'qubex.html'];
-assert.deepEqual(fs.readdirSync('docs').filter(f => f.endsWith('.html')).sort(), expectedPages, 'Only three public HTML pages');
+const expectedPages = ['bswap.html', 'index.html', 'matsuda.html', 'qubex.html'];
+assert.deepEqual(fs.readdirSync('docs').filter(f => f.endsWith('.html')).sort(), expectedPages, 'Only four public HTML pages');
 const documents = new Map(expectedPages.map(file => [file, parseHTML(fs.readFileSync('docs/' + file, 'utf8')).document]));
 const index = documents.get('index.html');
+// Individual reading editions stay crawlable but are excluded from search indexes.
+// The homepage remains indexable; no canonical or crawl-blocking robots.txt is added.
+assert.equal(index.querySelector('meta[name="robots"]'), null, 'Homepage remains indexable');
+assert(!fs.existsSync('docs/robots.txt'), 'Do not block crawling needed to discover noindex');
+for (const paper of provenance) {
+  const page = documents.get(`${paper.slug}.html`);
+  const robots = [...page.querySelectorAll('meta[name="robots"]')];
+  assert.equal(robots.length, 1, `${paper.slug}: exactly one robots directive`);
+  assert.equal(robots[0].getAttribute('content'), 'noindex', `${paper.slug}: individual paper excluded from search`);
+  assert.equal(page.querySelector('link[rel="canonical"]'), null, 'No canonical override');
+}
+
 assert.equal(index.querySelector('title').textContent, 'Research Portfolio · Akinori Machino');
 assert.equal(index.querySelector('.home-link').textContent, 'Akinori Machino');
 assert.equal(index.querySelector('main h1').textContent, 'Research Articles');
@@ -25,7 +37,7 @@ for (const card of cards) {
   assert(!card.querySelector('.paper-authors').textContent.includes('et al.'), 'All authors are shown');
   assert.equal(card.querySelector('time').getAttribute('datetime'), '2026');
   assert.match(card.querySelector('.paper-meta').textContent, /arXiv preprint|Physical Review Research/);
-  assert.equal(card.querySelectorAll('p').length, 3, 'Bibliography only; no summary');
+  assert.equal(card.querySelectorAll('p:not(.paper-doi)').length, 3, 'Bibliography only; no summary');
 }
 assert.equal(cards[0].querySelectorAll('a[href^="https://doi.org/"]').length, 0, 'Pending DOI is not advertised');
 assert.equal(cards[1].querySelector('a[href^="https://doi.org/"]').getAttribute('href'), 'https://doi.org/10.48550/arXiv.2606.13010');
@@ -149,7 +161,9 @@ for (const cssFile of ['assets/reader.css', 'assets/katex/katex.min.css']) {
 function scientificText(document) {
   const article = document.querySelector('article').cloneNode(true);
   for (const element of article.querySelectorAll('.rendered-math,.fallback-math,.semantic-unit,math,script,summary,img,object,.ltx_authors,.paper-author-header,.paper-affiliations,.paper-contact-notes,.ltx_title > .ltx_tag')) element.remove();
-  // The only approved source-text presentation change is this standalone label.
+  // Ignore only the confirmed REVTeX sample identifier in the reading edition.
+  for (const note of article.querySelectorAll('.ltx_pubnotes_meta')) if (note.textContent.replace(/\s+/g,' ').trim() === 'Preprint: APS/123-QED') note.remove();
+  // Normalize the approved standalone heading punctuation change.
   for (const heading of article.querySelectorAll('.ltx_title_acknowledgements')) {
     if (heading.textContent === 'Acknowledgements.') heading.textContent = 'Acknowledgements';
   }
@@ -167,7 +181,7 @@ for (const paper of provenance) {
   assert.deepEqual([...output.querySelectorAll('.paper-author-list .ltx_personname')].map(normalized), header.authors.map(a=>a[0]));
   assert.deepEqual([...output.querySelectorAll('.paper-affiliation-text')].map(normalized), header.affiliations);
   assert.deepEqual([...output.querySelectorAll('.paper-contact-notes a[href^="mailto:"]')].map(a=>a.getAttribute('href')), header.authors.filter(a=>a[3]).map(a=>'mailto:'+a[3]));
-  for(const [i, author] of [...output.querySelectorAll('.paper-author-list .ltx_creator')].entries()) assert.deepEqual([...author.querySelectorAll('.paper-author-markers a')].map(a=>a.textContent), [...header.authors[i][1].map(String), ...(header.authors[i][2]?[header.authors[i][2]]:[])]);
+  for(const [i, author] of [...output.querySelectorAll('.paper-author-list .ltx_creator')].entries()) assert.deepEqual([...author.querySelectorAll('.paper-author-markers a')].map(a=>a.textContent), [...header.authors[i][1].map(String), ...(header.authors[i][2]?[header.authors[i][2]]:[]), ...(header.thanks?.authorIndices.includes(i)?[header.thanks.symbol]:[])]);
   for(const h of output.querySelectorAll('.paper-numbered-heading')) assert(/[.:]$/.test(h.querySelector('.ltx_tag').textContent.trim()));
   assert.equal(output.querySelector('.topbar a.home-link'), null, 'Reader Papers link removed');
   const acknowledgements = output.querySelector('.ltx_title_acknowledgements');
@@ -217,8 +231,8 @@ for (const paper of provenance) {
   assert.equal(output.querySelectorAll('#reader-toc-open').length, 1);
   assert.equal(output.querySelectorAll('#reader-toc nav a[href^="#"]').length, output.querySelectorAll('article h2,article h3').length);
   assert.equal(output.querySelectorAll('script[src^="assets/toc.js?v="]').length, 1);
-  assert.equal(output.querySelectorAll('figure.table-single').length, paper.slug==='bswap'?3:2);
-  assert.equal(output.querySelectorAll('figure.table-wide').length, paper.slug==='bswap'?0:2);
+  assert.equal(output.querySelectorAll('figure.table-single').length, ({bswap:3,qubex:2,matsuda:1})[paper.slug]);
+  assert.equal(output.querySelectorAll('figure.table-wide').length, ({bswap:0,qubex:2,matsuda:1})[paper.slug]);
   for(const table of source.querySelectorAll('figure.ltx_table')){
     const actual=output.getElementById(table.id);
     assert.equal(actual.querySelectorAll('td').length,table.querySelectorAll('td').length);
@@ -231,7 +245,7 @@ for (const paper of provenance) {
     assert.equal(math.parentNode.getAttribute('aria-hidden'),'true');
     assert.equal(math.parentNode.parentNode.querySelector('.semantic-unit-text').textContent,normalization.text);
   }
-  assert.equal(output.querySelectorAll('main > .notice').length,0);
+  assert.equal(output.querySelectorAll('main > .edition-note').length,paper.slug==='matsuda'?1:0);
   const sourceMath = [...source.querySelectorAll('math')];
   assert.equal(sourceMath.length, paper.mathCount);
   assert.equal(output.querySelectorAll('math').length, paper.mathCount, `${paper.slug}: all expressions retained`);
@@ -265,7 +279,7 @@ for (const paper of provenance) {
     assert(Number(img.getAttribute('width')) > 0 && Number(img.getAttribute('height')) > 0, `Intrinsic figure dimensions: ${figure.file}`);
   }
 }
-assert.deepEqual(audit.total, {math:1220, converted:1217, repaired:12, nativeFallbacks:0, semanticUnits:3});
+assert.deepEqual(audit.total, {math:1424, converted:1419, repaired:12, nativeFallbacks:2, semanticUnits:3});
 assert.equal(repairs.length, 12);
 assert.deepEqual(audit.papers.flatMap(p => p.normalizations.map(f => f.id)), ['S4.T1.m8','S4.T1.m10','A3.SS4.p1.m4']);
 const readerCss = fs.readFileSync('docs/assets/reader.css','utf8');
@@ -274,15 +288,15 @@ assert(readerCss.includes('cite.ltx_cite{font-style:normal}'), 'Numeric citation
 assert(readerCss.includes('@media(max-width:350px){article section > .ltx_para > p.ltx_p{text-align:start}}'), 'Smallest viewport prose start-aligned');
 assert(readerCss.includes('p.ltx_p{text-align:justify;'), 'Desktop prose justified');
 for (const license of ['KaTeX','STIX-Two-Text','STIX-Two-Math']) assert(fs.statSync(`docs/assets/LICENSE-${license}.txt`).size > 500);
-console.log(JSON.stringify({passed:true, pages:stats, math:audit.total, checks:['all local assets, links and fragments','unique and preserved source IDs','all original scientific prose and TeX annotations','11 generic structural compatibility repairs and 1 isolated legacy layout adapter','3 semantic unit normalizations with unchanged original MathML','37 byte-identical figures with intrinsic dimensions','mobile typography rules and upright citations','three-page public boundary']}, null, 2));
+console.log(JSON.stringify({passed:true, pages:stats, math:audit.total, checks:['all local assets, links and fragments','unique and preserved source IDs','all original scientific prose and TeX annotations','11 generic structural compatibility repairs and 1 isolated legacy layout adapter','3 semantic unit normalizations with unchanged original MathML','45 byte-identical figures with intrinsic dimensions','mobile typography rules and upright citations','four-page public boundary']}, null, 2));
 
 // Preferences have standalone source-level tests; generated controller must match.
 assert.equal(fs.readFileSync('docs/assets/settings.js','utf8'), fs.readFileSync('settings.js','utf8'));
 require('./settings-test.cjs');
 
-for (const name of ['index.html','bswap.html','qubex.html']) { const html = fs.readFileSync('docs/'+name,'utf8'); assert(!/Paper Atelier|PAPER ATELIER|PHYSICS, WITH ROOM|Made for reading/.test(html), 'No promotional branding: '+name); }
+for (const name of expectedPages) { const html = fs.readFileSync('docs/'+name,'utf8'); assert(!/Paper Atelier|PAPER ATELIER|PHYSICS, WITH ROOM|Made for reading/.test(html), 'No promotional branding: '+name); }
 
-for (const file of ["index.html","bswap.html","qubex.html"]) {
+for (const file of expectedPages) {
  const html=fs.readFileSync(`docs/${file}`,"utf8");
  assert(/assets\/reader\.css\?v=[a-f0-9]{12}/.test(html), `${file}: CSS must be content-versioned`);
 }
@@ -293,7 +307,7 @@ for (const file of ["bswap.html","qubex.html"]) {
  assert(![...document.querySelectorAll(".topbar a")].some(a=>a.getAttribute("href")===other), `${file}: no cross-paper navigation`);
 }
 
-assert.deepEqual(audit.papers.map(p=>p.layoutAdjustments.length), [47,1]);
+assert.deepEqual(audit.papers.map(p=>p.layoutAdjustments.length), [47,1,0]);
 for(const paper of audit.papers){
  const doc=documents.get(`${paper.paper}.html`);
  for(const item of paper.layoutAdjustments){
@@ -304,7 +318,7 @@ for(const paper of audit.papers){
 }
 assert(readerCss.includes('article .katex{text-align-last:auto}'));
 
-for (const [paper,singles,wides] of [['bswap',15,3],['qubex',15,4]]) {
+for (const [paper,singles,wides] of [['bswap',15,3],['qubex',15,4],['matsuda',2,6]]) {
  const doc=documents.get(`${paper}.html`);
  assert.equal(doc.querySelectorAll('figure.figure-single').length,singles);
  assert.equal(doc.querySelectorAll('figure.figure-wide').length,wides);
@@ -316,3 +330,27 @@ for (const [paper,singles,wides] of [['bswap',15,3],['qubex',15,4]]) {
 require('./layout-test.cjs');
 
 require('./header-scroll-test.cjs');
+
+const matsuda = documents.get('matsuda.html');
+assert.equal(cards[2].querySelector('a[href="matsuda.html"]').textContent, 'HTML');
+assert(matsuda.querySelector('.notice.edition-note').textContent.includes('HTML based on'));
+assert(!matsuda.querySelector('.edition-note').textContent.includes('not the publisher'));
+assert.equal(matsuda.querySelectorAll('.ltx_role_thanks').length, 2);
+assert.deepEqual([...matsuda.querySelectorAll('.ltx_role_thanks')].map(n=>n.textContent.trim()), Array(2).fill('These authors contributed equally to this work.'));
+assert.deepEqual(audit.papers.find(p=>p.paper==='matsuda').fallbacks.map(x=>x.id), ['p8.m9','p8.m10']);
+
+// Dark-mode fallback contrast is a narrowly scoped presentation change only.
+assert(readerCss.includes(':root[data-reader-theme="dark"] .fallback-math [mathcolor="#000000"]{color:var(--ink)}'));
+assert.equal(matsuda.querySelectorAll('.fallback-math [mathcolor="#000000"]').length, 4);
+assert.equal(matsuda.querySelectorAll('.rendered-math').length, 202);
+for (const node of matsuda.querySelectorAll('.fallback-math [mathcolor="#000000"]')) {
+  assert.equal(node.getAttribute('style'), '--ltx-fg-color:#000000;');
+}
+assert(readerCss.includes('.reader-toc-dialog nav a>.notranslate{flex:none;white-space:nowrap;margin-right:.35em;align-self:flex-start}'));
+
+assert.equal(matsuda.querySelectorAll(".ltx_pubnotes_meta").length,0);
+assert(fs.readFileSync("sources/matsuda.html","utf8").includes("APS/123-QED"));
+
+assert.equal(index.querySelectorAll('.paper-links a[href^="https://doi.org/"]').length, 0);
+assert.equal(index.querySelectorAll('.paper-doi a').length, 2);
+for (const card of cards) assert.equal(card.querySelector('.paper-links a[href$=".html"]').textContent, "HTML");

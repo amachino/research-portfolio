@@ -211,5 +211,59 @@
         "sha256": "87c9d44f21e6f067e9eaaa7fa7f8252a6243907e09689d060f01cac614435539"
       }
     ]
+  },
+  {
+    "slug": "matsuda",
+    "arxivId": "2501.10710v2",
+    "url": "https://arxiv.org/html/2501.10710v2",
+    "retrieved": "2026-10-18",
+    "snapshot": "sources/matsuda.html",
+    "snapshotSha256": "dc421edbd94f0fee3cb700300f9b23efd32de41d5be9481ff8bf823e32daec76",
+    "originalHtmlSha256": "ebe32bf59d5e5e44e2a16828c0431582e41ae3332bc64fa03dc6de31943afdeb",
+    "sourceLicense": "CC0 1.0 Universal",
+    "sourceLicenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "mathCount": 204,
+    "figures": [
+      {
+        "source": "2501.10710v2/Introduction.jpg",
+        "file": "assets/figures/matsuda-Introduction.jpg",
+        "sha256": "aa1886a4e6b421f3505a5ef433ff71c9abcb09290ffc9cc4a724e28202189ce9"
+      },
+      {
+        "source": "2501.10710v2/PulseShaping.jpg",
+        "file": "assets/figures/matsuda-PulseShaping.jpg",
+        "sha256": "96be36ceb79c328ac528b3d559f439bb8cedc4945d89bc882330937521801659"
+      },
+      {
+        "source": "2501.10710v2/Rabi.jpg",
+        "file": "assets/figures/matsuda-Rabi.jpg",
+        "sha256": "57de623aec41c12dc7f0bd8ee6659a7e168984b8efa62786ba7f80df0f82982c"
+      },
+      {
+        "source": "2501.10710v2/RB40ns_summary.jpg",
+        "file": "assets/figures/matsuda-RB40ns_summary.jpg",
+        "sha256": "6224b16eb5a80094487b44f7f5ae54bce59bdc75a9571edc870947703edfe3a2"
+      },
+      {
+        "source": "2501.10710v2/Numerical_result_scan_T_and_Delta.jpg",
+        "file": "assets/figures/matsuda-Numerical_result_scan_T_and_Delta.jpg",
+        "sha256": "c12e1746e07c5fda2bf4d79cb59494f6cb2acc10ecbd8fe8813f1c9927db6af8"
+      },
+      {
+        "source": "2501.10710v2/Waveforms.jpg",
+        "file": "assets/figures/matsuda-Waveforms.jpg",
+        "sha256": "5b219461d0c5c3e69627256c501582af5098a99f3e210a3eb7dd0a3c7d45335a"
+      },
+      {
+        "source": "2501.10710v2/discontinuity.jpg",
+        "file": "assets/figures/matsuda-discontinuity.jpg",
+        "sha256": "a7948cf7561a7be299f11e303ef8b19d70324325f41075514a6a21c882b75980"
+      },
+      {
+        "source": "2501.10710v2/DetailedWiring.jpg",
+        "file": "assets/figures/matsuda-DetailedWiring.jpg",
+        "sha256": "674076537e5f8a8ad2c1ca0d308bc1a41801743eb5b3d4155774457011b48dd5"
+      }
+    ]
   }
 ]

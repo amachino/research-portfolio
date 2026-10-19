@@ -815,6 +815,45 @@
         "S4.T1",
         "A3.T2"
       ]
+    },
+    "matsuda": {
+      "arxiv_id": "2501.10710v2",
+      "pdf_url": "https://arxiv.org/pdf/2501.10710v2",
+      "source_html_sha256": "dc421edbd94f0fee3cb700300f9b23efd32de41d5be9481ff8bf823e32daec76",
+      "classification_basis": "Original PDF image bounding boxes and table extents; supplementary pages are single-column full-page.",
+      "tables": [
+        {
+          "html_id": "S0.T1",
+          "classification": "single-column",
+          "pdf_page": 2,
+          "caption": "Table 1: Summary of the qubit and readout parameters.",
+          "confidence": "high",
+          "caption_bounds_pt": [
+            320.13,
+            328.58,
+            554.91,
+            337.55
+          ]
+        },
+        {
+          "html_id": "S2.T1",
+          "classification": "two-column",
+          "pdf_page": 9,
+          "caption": "Table S1: Parameters used for the Gaussian pulses and the SEPs.",
+          "confidence": "high",
+          "caption_bounds_pt": [
+            170.59,
+            61.26,
+            445.49,
+            70.22
+          ]
+        }
+      ],
+      "pdf_sha256": "01656457db23583a6786c5ddcb6d50d79d0cda25ef95d32323e2dda415d7d248",
+      "visual_verification": {
+        "inspected": false,
+        "note": "PDF geometry extracted programmatically; browser layout review pending."
+      }
     }
   },
   "ambiguities": [],

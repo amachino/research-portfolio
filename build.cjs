@@ -38,7 +38,13 @@ for (const paper of provenance) {
   const { document } = parseHTML(source);
   const article = document.querySelector('article');
   for (const script of article.querySelectorAll('script')) script.remove();
-  for (const element of article.querySelectorAll('[style]')) element.removeAttribute('style');
+  if (paper.slug === 'matsuda') {
+    const placeholder = article.querySelector('.ltx_pubnotes_meta');
+    if (placeholder?.textContent.replace(/\s+/g, ' ').trim() !== 'Preprint: APS/123-QED') throw new Error('Unexpected preprint identifier');
+    placeholder.remove(); // REVTeX sample identifier, not scientific manuscript content.
+  }
+  // Native MathML fallback must retain its exact source presentation.
+  for (const element of article.querySelectorAll('[style]')) if (!element.closest('math')) element.removeAttribute('style');
   for (const object of article.querySelectorAll('object[data]')) {
     const img = document.createElement('img');
     img.setAttribute('src', object.getAttribute('data'));
@@ -56,6 +62,19 @@ for (const paper of provenance) {
     if (figure.file.endsWith('.svg')) {
       const viewBox = bytes.toString().match(/viewBox=["']([^"']+)/);
       if (viewBox) dimensions = viewBox[1].trim().split(/[ ,]+/).map(Number).slice(2).map(v => Math.round(v * 100));
+    } else if (/\.jpe?g$/i.test(figure.file)) {
+      // Read baseline/progressive JPEG SOF dimensions without decoding or changing source bytes.
+      if (bytes.readUInt16BE(0) !== 0xffd8) throw new Error('Invalid JPEG');
+      let offset = 2;
+      while (offset + 8 < bytes.length) {
+        if (bytes[offset++] !== 0xff) throw new Error('Invalid JPEG marker');
+        while (bytes[offset] === 0xff) offset++;
+        const marker = bytes[offset++];
+        const length = bytes.readUInt16BE(offset);
+        if ([0xc0,0xc1,0xc2,0xc3,0xc5,0xc6,0xc7,0xc9,0xca,0xcb,0xcd,0xce,0xcf].includes(marker)) { dimensions = [bytes.readUInt16BE(offset+5), bytes.readUInt16BE(offset+3)]; break; }
+        if (length < 2) throw new Error('Invalid JPEG segment');
+        offset += length;
+      }
     } else if (figure.file.endsWith('.png')) dimensions = [bytes.readUInt32BE(16), bytes.readUInt32BE(20)];
     if (!dimensions || !dimensions.every(n => Number.isFinite(n) && n > 0)) throw new Error(`Missing image dimensions: ${figure.file}`);
     img.setAttribute('width', String(dimensions[0]));
@@ -97,8 +116,8 @@ for (const paper of provenance) {
   const tocMarkup = `<button type="button" class="reader-toc-trigger" id="reader-toc-open" aria-label="Open table of contents" aria-haspopup="dialog" aria-controls="reader-toc" aria-expanded="false" hidden><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M4 5h2M10 5h10M4 12h2M10 12h10M4 19h2M10 19h10" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button><dialog class="reader-toc-dialog" id="reader-toc" aria-labelledby="reader-toc-title"><div class="reader-toc-heading"><h2 id="reader-toc-title">Contents</h2><button type="button" id="reader-toc-close" autofocus>Close</button></div><nav aria-label="Table of contents"><a class="all-papers-link" href="index.html">← Research Portfolio</a>${tocLinks}</nav></dialog>`;
   const report = require('./math-renderer.cjs')(document,article,paper);
   if (report.mathCount !== paper.mathCount) throw new Error(`Math count changed: ${paper.slug}`);
-  const notice = '';
-  const output = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="${escape(title)}. Responsive reading edition with build-time mathematics."><title>${escape(title)}</title><link rel="stylesheet" href="assets/reader.css?v=${readerCssVersion}"><link rel="stylesheet" href="assets/katex/katex.min.css"><script src="assets/settings.js?v=${readerSettingsVersion}"></script><script src="assets/anchor.js" defer></script><script src="assets/toc.js?v=${readerTocVersion}" defer></script><script src="assets/header-scroll.js?v=${readerHeaderVersion}" defer></script></head><body><header class="topbar reader-topbar">${tocMarkup}<nav><a href="https://arxiv.org/abs/${paper.arxivId}">arXiv</a><a href="https://arxiv.org/pdf/${paper.arxivId}">PDF</a>${settingsMarkup}</nav></header><div class="layout"><aside aria-label="On this page"><a class="all-papers-link" href="index.html">← Research Portfolio</a><div class="eyebrow">ON THIS PAGE</div>${nav}<a href="#top">Back to top ↑</a></aside><main id="top">${notice}${article.outerHTML}<footer><p><a class="all-papers-link" href="index.html">← Research Portfolio</a></p>Content and figures from <a href="${paper.url}">arXiv ${paper.arxivId}</a>. Original authors retain their rights. Presentation changed; scientific text and units preserved. <a href="NOTICE.md">Rights and notices</a>.</footer></main></div></body></html>\n`;
+  const notice = paper.slug === 'matsuda' ? '<p class="notice edition-note">HTML based on <a href="https://arxiv.org/abs/2501.10710v2">arXiv:2501.10710v2</a> (11 September 2025), including supplementary material. · <a href="https://doi.org/10.1103/xw1s-dt16">Published article: Physical Review Research 8, L012003 (2026)</a>.</p>' : '';
+  const output = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="${escape(title)}. Responsive reading edition with build-time mathematics."><title>${escape(title)}</title><link rel="stylesheet" href="assets/reader.css?v=${readerCssVersion}"><link rel="stylesheet" href="assets/katex/katex.min.css"><script src="assets/settings.js?v=${readerSettingsVersion}"></script><script src="assets/anchor.js" defer></script><script src="assets/toc.js?v=${readerTocVersion}" defer></script><script src="assets/header-scroll.js?v=${readerHeaderVersion}" defer></script></head><body><header class="topbar reader-topbar">${tocMarkup}<nav><a href="https://arxiv.org/abs/${paper.arxivId}">arXiv</a><a href="https://arxiv.org/pdf/${paper.arxivId}">PDF</a>${settingsMarkup}</nav></header><div class="layout"><aside aria-label="On this page"><a class="all-papers-link" href="index.html">← Research Portfolio</a><div class="eyebrow">ON THIS PAGE</div>${nav}<a href="#top">Back to top ↑</a></aside><main id="top">${notice}${article.outerHTML}<footer><p><a class="all-papers-link" href="index.html">← Research Portfolio</a></p>Content and figures from <a href="${paper.url}">arXiv ${paper.arxivId}</a>. Original authors retain their rights. Presentation changed; scientific text and units preserved. <a href="NOTICE.md">Rights and notices</a>.</footer></main></div></body></html>\n`;
   fs.writeFileSync(`docs/${paper.slug}.html`, output);
   reports.push(report);
 }

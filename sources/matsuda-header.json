@@ -1,0 +1,149 @@
+{
+  "sourcePdf": "https://arxiv.org/pdf/2501.10710v2",
+  "affiliations": [
+    "Graduate School of Engineering Science, The University of Osaka, 1-3 Machikaneyama, Toyonaka, Osaka, 560-8531, Japan",
+    "Center for Quantum Information and Quantum Biology, The University of Osaka, 1-2 Machikaneyama, Toyonaka, Osaka, 560-0043, Japan",
+    "QuEL, Inc., Hachioji ON Building 5F, 4-7-14 Myojincho, Hachioji, Tokyo, Japan",
+    "e-trees.Japan, Inc., Daiwaunyu Building 2F, 2-9-2 Owadamachi, Hachioji, Tokyo 192-0045, Japan",
+    "NTT Computer and Data Science Laboratories, NTT Corporation, Musashino 180-8585, Japan",
+    "RIKEN Center for Quantum Computing, Wako, Saitama 351-0198, Japan",
+    "Department of Applied Physics, Graduate School of Engineering, The University of Tokyo, 7-3-1 Hongo, Bunkyo-ku, Tokyo 113-8656, Japan"
+  ],
+  "authors": [
+    [
+      "R. Matsuda",
+      [
+        1,
+        2
+      ],
+      "†",
+      "u657789f@ecs.osaka-u.ac.jp"
+    ],
+    [
+      "R. Ohira",
+      [
+        3
+      ],
+      "‡",
+      "ohira@quel-inc.com"
+    ],
+    [
+      "T. Sumida",
+      [
+        3
+      ]
+    ],
+    [
+      "H. Shiomi",
+      [
+        2,
+        3
+      ]
+    ],
+    [
+      "A. Machino",
+      [
+        1,
+        2
+      ]
+    ],
+    [
+      "S. Morisaka",
+      [
+        2,
+        3
+      ]
+    ],
+    [
+      "K. Koike",
+      [
+        4
+      ]
+    ],
+    [
+      "T. Miyoshi",
+      [
+        2,
+        3,
+        4
+      ]
+    ],
+    [
+      "Y. Kurimoto",
+      [
+        3
+      ]
+    ],
+    [
+      "Y. Sugita",
+      [
+        3
+      ]
+    ],
+    [
+      "Y. Ito",
+      [
+        3
+      ]
+    ],
+    [
+      "Y. Suzuki",
+      [
+        5
+      ]
+    ],
+    [
+      "P. A. Spring",
+      [
+        6
+      ]
+    ],
+    [
+      "S. Wang",
+      [
+        6
+      ]
+    ],
+    [
+      "S. Tamate",
+      [
+        6
+      ]
+    ],
+    [
+      "Y. Tabuchi",
+      [
+        6
+      ]
+    ],
+    [
+      "Y. Nakamura",
+      [
+        6,
+        7
+      ]
+    ],
+    [
+      "K. Ogawa",
+      [
+        2
+      ]
+    ],
+    [
+      "M. Negoro",
+      [
+        2,
+        3
+      ]
+    ]
+  ],
+  "contactLabel": "",
+  "thanks": {
+    "symbol": "∗",
+    "text": "These authors contributed equally to this work.",
+    "authorIndices": [
+      0,
+      1
+    ]
+  }
+}
