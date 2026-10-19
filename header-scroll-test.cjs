@@ -33,8 +33,9 @@ h.state.focused=false;h.headerEvents.focusout();h.scroll(400);assert(h.hidden())
 h.state.open=true;h.mutation();assert(!h.hidden(),'opening dialog reveals');h.scroll(500);assert(!h.hidden(),'open dialog pins header');
 h.state.open=false;h.dialogEvents.close();h.scroll(600);assert(h.hidden());
 h.events.hashchange();assert(!h.hidden(),'anchor navigation reveals');h.scroll(700);assert(h.hidden());
-h.media.matches=false;h.mediaEvents.change();h.scroll(1000);assert(!h.hidden(),'desktop does not hide');
-h.media.matches=true;h.mediaEvents.change();h.scroll(1100);assert(h.hidden());
+h.media.matches=false;h.scroll(1000);assert(h.hidden(),'desktop hides with the same threshold');
+h.scroll(992);assert(!h.hidden(),'desktop upward scroll reveals');
+h.media.matches=true;h.scroll(1100);assert(h.hidden());
 h.state.height=80;h.resize();assert(!h.hidden());assert.equal(h.root.style['--reader-header-height'],'80px');
 h.scroll(-20);assert(!h.hidden(),'top overscroll clamped');h.scroll(4200);assert(h.hidden());h.scroll(4300);h.scroll(4200);assert(h.hidden(),'bottom bounce does not reveal');
 h.events.pageshow();assert(!h.hidden(),'history restore visible');
@@ -50,3 +51,5 @@ assert(css.includes('.reader-topbar{position:sticky;top:0;'));
 assert(css.includes('@media(prefers-reduced-motion:reduce){.reader-topbar{transition:none}}'));
 assert(!/fetch\s*\(|localStorage|preventDefault|aria-hidden|inert/.test(script));
 console.log('Reader header scroll tests passed: thresholds, focus/dialog locks, anchors, resize, history, bounce, desktop and build wiring');
+
+assert(!script.includes("max-width"), "Scroll behavior is independent of viewport width");

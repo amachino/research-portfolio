@@ -354,3 +354,12 @@ assert(fs.readFileSync("sources/matsuda.html","utf8").includes("APS/123-QED"));
 assert.equal(index.querySelectorAll('.paper-links a[href^="https://doi.org/"]').length, 0);
 assert.equal(index.querySelectorAll('.paper-doi a').length, 2);
 for (const card of cards) assert.equal(card.querySelector('.paper-links a[href$=".html"]').textContent, "HTML");
+
+// PDF navigation is intentionally delegated to the linked arXiv record.
+assert.equal(index.querySelectorAll('.paper-links a').length, 7);
+for (const a of index.querySelectorAll('.paper-links a')) assert.notEqual(a.textContent, "PDF");
+for (const slug of ["bswap", "qubex", "matsuda"]) {
+ const nav=documents.get(`${slug}.html`).querySelector(".topbar > nav");
+ assert.equal(nav.querySelectorAll('a[href*="/pdf/"]').length,0);
+ assert(nav.querySelector('a[href^="https://arxiv.org/abs/"]'));
+}
