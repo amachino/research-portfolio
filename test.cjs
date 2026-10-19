@@ -370,3 +370,5 @@ for (const slug of ["bswap", "qubex", "matsuda"]) {
  assert.equal(nav.querySelectorAll('a[href*="/pdf/"]').length,0);
  assert(nav.querySelector('a[href^="https://arxiv.org/abs/"]'));
 }
+
+assert.deepEqual([...cards[2].querySelectorAll(".paper-links a")].map(a=>a.textContent), ["HTML", "arXiv", "Publisher"]);
