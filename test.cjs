@@ -28,7 +28,14 @@ for (const paper of provenance) {
 assert.equal(index.querySelector('title').textContent, 'Research Portfolio · Akinori Machino');
 assert.equal(index.querySelector('.home-link').textContent, 'Akinori Machino');
 assert.equal(index.querySelector('main h1').textContent, 'Research Articles');
-const cards = [...index.querySelectorAll('.paper-list section')];
+const allCards = [...index.querySelectorAll('.paper-list section')];
+const cards = allCards.slice(0,3);
+assert.equal(allCards.length,4);
+assert.equal(allCards[3].querySelectorAll('a').length,0,'Conference entry is metadata only');
+assert(!index.querySelector('a[href="qce26.html"]'));
+assert(allCards[3].textContent.includes('10.1109/QCE68830.2026.10307'));
+assert(allCards[3].textContent.includes('Not yet resolving'));
+assert.equal(allCards[3].querySelector('.paper-authors').textContent,cards[1].querySelector('.paper-authors').textContent);
 assert.equal(cards.length, 3);
 for (const card of cards) {
   assert.equal(card.querySelector('.paper-authors').getAttribute('translate'), 'no');
