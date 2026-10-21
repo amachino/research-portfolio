@@ -76,3 +76,18 @@ Desktop navigation and the portfolio home page retain their existing behavior.
 Without JavaScript, the mobile header remains sticky and visible.
 
 The Matsuda v2 edition preserves all eight original JPEG images byte-for-byte. Their intrinsic dimensions are read from JPEG SOF markers. Main-paper Figures 1–2 and Table I use the original single-column layout; Figures 3–4 and the supplementary figures/table retain full reader width. Classification records the v2 PDF image bounding boxes/table extents, independently of the earlier two-paper visual audit. Public-page browser layout verification remains a separate requirement from the static tests.
+
+QuBE Figures 1, 8, 9 and 13 use SVG converted from the original PDFs in the
+public `2606.13010v1` TeX archive. The existing pinned `latexml-oxide` graphics
+path (`f129b0b3b6301053a9b1365c872bc7fa4dd40384`) retains vector labels and
+geometry together with embedded raster photographs/plots; those raster portions
+are not vectorized. Figures 1 and 13 exceed its default 500 KiB PDF limit and
+use the existing `--graphics-svg-threshold-kb=2048` option; Figures 8 and 9 use
+the default. Conversion runs a graphics-only `graphicx` wrapper with the shared
+graphics cache disabled, using pdftocairo 26.04.0 on macOS arm64. Source archive,
+PDF, binary and output hashes are recorded in `sources/provenance.json`, and
+the earlier PNGs remain available at their original URLs. Figure 14 remains
+the original PNG photograph; Figure 18 remains an HTML table. The remaining
+figures, source HTML, numbering, captions and links are unchanged. This bounded
+asset update does not adopt the pending Leaf graphics adapter or migrate the
+reader package.

@@ -161,8 +161,32 @@
     "figures": [
       {
         "source": "2606.13010v1/system-overview.png",
-        "file": "assets/figures/qubex-system-overview.png",
-        "sha256": "8aba1f6f557763a543ce547c31f38404b0c7ee43f69216be6b52e288ba96453f"
+        "file": "assets/figures/qubex-system-overview.svg",
+        "sha256": "90eb7fe046dc952e31948876adf8f4d16fcdc6046b2429aee6766504f9601cf3",
+        "originalFile": "assets/figures/qubex-system-overview.png",
+        "originalSha256": "8aba1f6f557763a543ce547c31f38404b0c7ee43f69216be6b52e288ba96453f",
+        "conversion": {
+          "converter": "https://github.com/amachino/latexml-oxide",
+          "converterCommit": "f129b0b3b6301053a9b1365c872bc7fa4dd40384",
+          "converterBinarySha256": "f7f81a731c98141b4831e0dc087c3e8a8302e909b8edff9b9ce8c2ca2f4df1fb",
+          "backendVersions": {
+            "pdftocairo": "pdftocairo version 26.04.0",
+            "platform": "darwin",
+            "architecture": "arm64"
+          },
+          "sourceArchive": "https://arxiv.org/src/2606.13010v1",
+          "sourceArchiveSha256": "5214a96a02dd01d40df266efb9097099936f659adb61e488a553f6fb8f747983",
+          "sourceFile": "fig/system-overview/system-overview.pdf",
+          "sourceSha256": "6d59ade39c510b8c392841884e11b1c12e9d271a993e7360167374ae5febbe98",
+          "arguments": [
+            "figure.tex",
+            "--destination=reading.html",
+            "--graphics-svg-threshold-kb=2048"
+          ],
+          "content": "Mixed vector/raster SVG; source PDF paths and text retained as paths, embedded images remain raster.",
+          "vectorPaths": 118,
+          "embeddedRasterImages": 2
+        }
       },
       {
         "source": "2606.13010v1/hardware-architecture.svg",
@@ -196,13 +220,59 @@
       },
       {
         "source": "2606.13010v1/chip-frequency-map.png",
-        "file": "assets/figures/qubex-chip-frequency-map.png",
-        "sha256": "49beb138863996b2301e5428cae2f924f44debfa1cdde3974424ac7f923cefba"
+        "file": "assets/figures/qubex-chip-frequency-map.svg",
+        "sha256": "e877086a7b1fb59826d1dfb6c04382bca5d4e445cba9c31c36640c9d28e4e68b",
+        "originalFile": "assets/figures/qubex-chip-frequency-map.png",
+        "originalSha256": "49beb138863996b2301e5428cae2f924f44debfa1cdde3974424ac7f923cefba",
+        "conversion": {
+          "converter": "https://github.com/amachino/latexml-oxide",
+          "converterCommit": "f129b0b3b6301053a9b1365c872bc7fa4dd40384",
+          "converterBinarySha256": "f7f81a731c98141b4831e0dc087c3e8a8302e909b8edff9b9ce8c2ca2f4df1fb",
+          "backendVersions": {
+            "pdftocairo": "pdftocairo version 26.04.0",
+            "platform": "darwin",
+            "architecture": "arm64"
+          },
+          "sourceArchive": "https://arxiv.org/src/2606.13010v1",
+          "sourceArchiveSha256": "5214a96a02dd01d40df266efb9097099936f659adb61e488a553f6fb8f747983",
+          "sourceFile": "fig/chip-frequency-map/chip-frequency-map.pdf",
+          "sourceSha256": "91b3a5eb01c7bdb7ec40dd55b7eb876a874553ed1fa0dd395d964d1dc634ae89",
+          "arguments": [
+            "figure.tex",
+            "--destination=reading.html"
+          ],
+          "content": "Mixed vector/raster SVG; source PDF paths and text retained as paths, embedded images remain raster.",
+          "vectorPaths": 148,
+          "embeddedRasterImages": 4
+        }
       },
       {
         "source": "2606.13010v1/frequency-identification.png",
-        "file": "assets/figures/qubex-frequency-identification.png",
-        "sha256": "8d4a4c82e201a084136c3928f9945918412628daa27c50bb6883f1a90bf1bba5"
+        "file": "assets/figures/qubex-frequency-identification.svg",
+        "sha256": "8b29d70c57bf27fa151394430a772f2b42d014f884f8fc3462cdd6dbcadbcdfc",
+        "originalFile": "assets/figures/qubex-frequency-identification.png",
+        "originalSha256": "8d4a4c82e201a084136c3928f9945918412628daa27c50bb6883f1a90bf1bba5",
+        "conversion": {
+          "converter": "https://github.com/amachino/latexml-oxide",
+          "converterCommit": "f129b0b3b6301053a9b1365c872bc7fa4dd40384",
+          "converterBinarySha256": "f7f81a731c98141b4831e0dc087c3e8a8302e909b8edff9b9ce8c2ca2f4df1fb",
+          "backendVersions": {
+            "pdftocairo": "pdftocairo version 26.04.0",
+            "platform": "darwin",
+            "architecture": "arm64"
+          },
+          "sourceArchive": "https://arxiv.org/src/2606.13010v1",
+          "sourceArchiveSha256": "5214a96a02dd01d40df266efb9097099936f659adb61e488a553f6fb8f747983",
+          "sourceFile": "fig/frequency-identification/frequency-identification.pdf",
+          "sourceSha256": "e1dda16a849a057b7f56a2a174fba2a1f5301489473393035e6511dd90e544e7",
+          "arguments": [
+            "figure.tex",
+            "--destination=reading.html"
+          ],
+          "content": "Mixed vector/raster SVG; source PDF paths and text retained as paths, embedded images remain raster.",
+          "vectorPaths": 105,
+          "embeddedRasterImages": 4
+        }
       },
       {
         "source": "2606.13010v1/coherence-summary.svg",
@@ -221,8 +291,32 @@
       },
       {
         "source": "2606.13010v1/multilevel-readout.png",
-        "file": "assets/figures/qubex-multilevel-readout.png",
-        "sha256": "f7bb65e4bcf2147dffd6ddc73558561f187d53650f5ec83092fbb88ecb8f88f0"
+        "file": "assets/figures/qubex-multilevel-readout.svg",
+        "sha256": "002858e4c34ca81a866198adce6608ea21826252436f5af4f9da79a8f64a2c2e",
+        "originalFile": "assets/figures/qubex-multilevel-readout.png",
+        "originalSha256": "f7bb65e4bcf2147dffd6ddc73558561f187d53650f5ec83092fbb88ecb8f88f0",
+        "conversion": {
+          "converter": "https://github.com/amachino/latexml-oxide",
+          "converterCommit": "f129b0b3b6301053a9b1365c872bc7fa4dd40384",
+          "converterBinarySha256": "f7f81a731c98141b4831e0dc087c3e8a8302e909b8edff9b9ce8c2ca2f4df1fb",
+          "backendVersions": {
+            "pdftocairo": "pdftocairo version 26.04.0",
+            "platform": "darwin",
+            "architecture": "arm64"
+          },
+          "sourceArchive": "https://arxiv.org/src/2606.13010v1",
+          "sourceArchiveSha256": "5214a96a02dd01d40df266efb9097099936f659adb61e488a553f6fb8f747983",
+          "sourceFile": "fig/multilevel-readout/multilevel-readout.pdf",
+          "sourceSha256": "f3adbe4b86c05540bb98840a4bc70fdf919b33e63944cd8b95773ca995c4f943",
+          "arguments": [
+            "figure.tex",
+            "--destination=reading.html",
+            "--graphics-svg-threshold-kb=2048"
+          ],
+          "content": "Mixed vector/raster SVG; source PDF paths and text retained as paths, embedded images remain raster.",
+          "vectorPaths": 137,
+          "embeddedRasterImages": 4
+        }
       },
       {
         "source": "2606.13010v1/fig/qube-unit-internal/qube-unit-internal.png",
