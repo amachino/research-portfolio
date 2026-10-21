@@ -28,13 +28,35 @@
       },
       {
         "source": "2610.21936v1/fig04.png",
-        "file": "assets/figures/bswap-fig04.png",
-        "sha256": "41031365109df54213516b7462318d31b9a4f571ffdf284a525376871d450570"
+        "file": "assets/figures/bswap-fig04.svg",
+        "sha256": "2b5926809d0875924f789f5901d6a6c952f2c52978eb46094da202bdf3686f0c",
+        "originalFile": "assets/figures/bswap-fig04.png",
+        "originalSha256": "41031365109df54213516b7462318d31b9a4f571ffdf284a525376871d450570",
+        "conversion": {
+          "converter": "https://github.com/amachino/latexml-oxide",
+          "converterCommit": "f129b0b3b6301053a9b1365c872bc7fa4dd40384",
+          "restoredFrom": {
+            "site": "https://matsuda-reader-review.amachino.chatgpt.site/bswap",
+            "version": 13,
+            "sourceCommit": "3e5f9f160e72fb74d1d2c8774bcff01d1990cecc"
+          }
+        }
       },
       {
         "source": "2610.21936v1/fig05.png",
-        "file": "assets/figures/bswap-fig05.png",
-        "sha256": "9fddddb2125440ab4df699e988080f7b20b30ee1d9da1b9ad84e2896d7e2e786"
+        "file": "assets/figures/bswap-fig05.svg",
+        "sha256": "419fb7fd79cc85e8203e1449a96b101712710bbb18fd41b9368336da15b20c8c",
+        "originalFile": "assets/figures/bswap-fig05.png",
+        "originalSha256": "9fddddb2125440ab4df699e988080f7b20b30ee1d9da1b9ad84e2896d7e2e786",
+        "conversion": {
+          "converter": "https://github.com/amachino/latexml-oxide",
+          "converterCommit": "f129b0b3b6301053a9b1365c872bc7fa4dd40384",
+          "restoredFrom": {
+            "site": "https://matsuda-reader-review.amachino.chatgpt.site/bswap",
+            "version": 13,
+            "sourceCommit": "3e5f9f160e72fb74d1d2c8774bcff01d1990cecc"
+          }
+        }
       },
       {
         "source": "2610.21936v1/fig06.svg",
@@ -58,8 +80,19 @@
       },
       {
         "source": "2610.21936v1/fig10.png",
-        "file": "assets/figures/bswap-fig10.png",
-        "sha256": "2ac5eb2c07dada4d94475a5bada3780ffe01ae5d81e1740dabda4e04fda0851d"
+        "file": "assets/figures/bswap-fig10.svg",
+        "sha256": "2f871a0048460a3f857c916bb111683e3983786c0468fc11959b8b77728a8d0e",
+        "originalFile": "assets/figures/bswap-fig10.png",
+        "originalSha256": "2ac5eb2c07dada4d94475a5bada3780ffe01ae5d81e1740dabda4e04fda0851d",
+        "conversion": {
+          "converter": "https://github.com/amachino/latexml-oxide",
+          "converterCommit": "f129b0b3b6301053a9b1365c872bc7fa4dd40384",
+          "restoredFrom": {
+            "site": "https://matsuda-reader-review.amachino.chatgpt.site/bswap",
+            "version": 13,
+            "sourceCommit": "3e5f9f160e72fb74d1d2c8774bcff01d1990cecc"
+          }
+        }
       },
       {
         "source": "2610.21936v1/fig11.svg",
@@ -88,8 +121,19 @@
       },
       {
         "source": "2610.21936v1/fig16.png",
-        "file": "assets/figures/bswap-fig16.png",
-        "sha256": "e9492fcbbce4ab819684701c1dc5f2a6f4da4f69bde9cdac6f106b61df9f6202"
+        "file": "assets/figures/bswap-fig16.svg",
+        "sha256": "0f10005149423b1677d9d4ca930a6e2fdc41f672170cdb115271743f298bd41b",
+        "originalFile": "assets/figures/bswap-fig16.png",
+        "originalSha256": "e9492fcbbce4ab819684701c1dc5f2a6f4da4f69bde9cdac6f106b61df9f6202",
+        "conversion": {
+          "converter": "https://github.com/amachino/latexml-oxide",
+          "converterCommit": "f129b0b3b6301053a9b1365c872bc7fa4dd40384",
+          "restoredFrom": {
+            "site": "https://matsuda-reader-review.amachino.chatgpt.site/bswap",
+            "version": 13,
+            "sourceCommit": "3e5f9f160e72fb74d1d2c8774bcff01d1990cecc"
+          }
+        }
       },
       {
         "source": "2610.21936v1/fig17.svg",
