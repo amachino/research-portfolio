@@ -353,7 +353,7 @@ assert.equal(matsuda.querySelectorAll('.rendered-math').length, 202);
 for (const node of matsuda.querySelectorAll('.fallback-math [mathcolor="#000000"]')) {
   assert.equal(node.getAttribute('style'), '--ltx-fg-color:#000000;');
 }
-assert(readerCss.includes('.reader-toc-dialog nav a>.notranslate{flex:none;white-space:nowrap;margin-right:.35em;align-self:flex-start}'));
+assert(readerCss.includes('.reader-toc-dialog nav a>.notranslate{flex:none;white-space:nowrap;margin-right:.35em}'));
 
 assert.equal(matsuda.querySelectorAll(".ltx_pubnotes_meta").length,0);
 assert(fs.readFileSync("sources/matsuda.html","utf8").includes("APS/123-QED"));

@@ -104,7 +104,7 @@ article .paper-numbered-heading{display:grid;grid-template-columns:max-content m
 .reader-toc-heading h2{font:600 18px/1.4 system-ui;margin:0;clear:none}
 .reader-toc-heading button{min-height:48px;min-width:48px;border:0;background:transparent;color:var(--accent);font:inherit;cursor:pointer}
 .reader-toc-dialog nav{overflow-y:auto;min-height:0;padding:12px 18px calc(20px + env(safe-area-inset-bottom));overscroll-behavior:contain}
-.reader-toc-dialog nav a{display:flex;align-items:center;min-height:48px;padding:10px 0;text-decoration:none;overflow-wrap:anywhere}
+.reader-toc-dialog nav a{display:flex;align-items:baseline;min-height:48px;padding:10px 0;text-decoration:none;overflow-wrap:anywhere}
 .reader-toc-dialog nav a.toc-level-h3{padding-left:16px;color:var(--muted);font-size:13px}
 .reader-toc-trigger:focus-visible,.reader-toc-dialog :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 @media(max-width:900px){.reader-toc-trigger:not([hidden]){display:block}}
@@ -150,6 +150,10 @@ body:has(.reader-topbar) aside{top:calc(var(--reader-header-height,52px) + 8px);
 /* Preserve source MathML; adapt only explicit black fallback glyphs in dark mode. */
 :root[data-reader-theme="dark"] .fallback-math [mathcolor="#000000"]{color:var(--ink)}
 /* Protected numbering stays intact beside wrapping mobile TOC labels. */
-.reader-toc-dialog nav a>.notranslate{flex:none;white-space:nowrap;margin-right:.35em;align-self:flex-start}
+.reader-toc-dialog nav a>.notranslate{flex:none;white-space:nowrap;margin-right:.35em}
+
+/* Numbered references keep wrapped lines clear of the original labels. */
+.ltx_bibitem:has(>.ltx_tag_bibitem){position:relative;padding-inline-start:3em}
+.ltx_bibitem>.ltx_tag_bibitem{position:absolute;inset-inline-start:0;inset-block-start:0;max-width:2.5em}
 
 .edition-note{hyphens:none}
