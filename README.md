@@ -13,6 +13,20 @@ Three responsive reading editions of quantum computing papers, with JavaScript K
 
 No client-side math renderer, analytics, CDN, or runtime service is required. Appearance settings offer STIX serif or the system sans-serif font, exactly three responsive text sizes (Small/Medium/Large), and Light/Dark themes. On phones the sizes are 14.5/17/20 px with line heights 1.25/1.45/1.55; desktop sizes are 19/22/25 px (Small is 18 px on intermediate screens). Native radio controls sit in a modal dialog presented as a phone bottom sheet. Original scientific figure colors are preserved on white panels. Valid earlier numeric preferences migrate to the closest preset. Preferences are shared across the papers using only localStorage in the same browser; Reset restores Small, Serif, and Light defaults. Browser zoom remains enabled. The math fonts are unchanged, with inline math inheriting the surrounding text size. No preference is transmitted.
 
+Normal browser Copy on an article selection preserves prose and replaces
+mathematics with its exact source TeX: `$...$` inline and `$$...$$` for display
+math, in both plain-text and HTML clipboard formats. Partial formula selections
+copy the complete formula without changing the visible selection. Ordinary
+text, editable fields, and formulas lacking source TeX retain native copying.
+The local `copy-math.js` is byte-identical to the approved Leaf PR #1 version
+at `0128a3a` (SHA-256
+`3e16170f7e2d599f71d6f9928b6208fd98d13684f9bcf4c3f9a238494fdb9f00`).
+The build copies and content-versions this one asset; no Leaf dependency or
+reader migration is involved. The handler reads no clipboard data, changes no
+permissions, and makes no network requests. Document-specific macros remain
+unexpanded, and equations split by LaTeXML may copy as multiple TeX runs.
+Android's native long-press selection menu has not been verified on a device.
+
 The small `anchor.js` helper corrects initial fragment positioning after local fonts load without interrupting a reader who has interacted with the page. Prose is justified with automatic English hyphenation. At widths of 600 px and below, text uses 14.5 px STIX Two Text and a 1.25 line-height; at 350 px and below it is start-aligned. Citation labels remain upright, figures have intrinsic dimensions, and wide equation/table overflow stays local.
 
 ## Rebuild and test
