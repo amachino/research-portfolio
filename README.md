@@ -27,6 +27,14 @@ permissions, and makes no network requests. Document-specific macros remain
 unexpanded, and equations split by LaTeXML may copy as multiple TeX runs.
 Android's native long-press selection menu has not been verified on a device.
 
+Each source formula is also a native selection unit through `user-select:all`
+(including the WebKit prefix) on its existing math wrapper. This includes
+rendering fallbacks and semantic units, while equation numbers, neighboring
+cells and surrounding prose retain their normal selection behavior. Chrome
+selects the whole formula on a single click as well as a double click. Touch
+checks use browser emulation; Android's actual context menu and selection
+handles remain unverified. No custom gesture handler or context menu is added.
+
 The small `anchor.js` helper corrects initial fragment positioning after local fonts load without interrupting a reader who has interacted with the page. Prose is justified with automatic English hyphenation. At widths of 600 px and below, text uses 14.5 px STIX Two Text and a 1.25 line-height; at 350 px and below it is start-aligned. Citation labels remain upright, figures have intrinsic dimensions, and wide equation/table overflow stays local.
 
 ## Rebuild and test
