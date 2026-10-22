@@ -14,13 +14,6 @@ article figcaption p,article .ltx_note_content p{text-align:start;text-align-las
 
 .rendered-math{position:relative}.paper-link{display:inline-block;font:13px system-ui;padding:10px 14px;border:1px solid var(--rule);text-decoration:none}.paper-link:hover{background:var(--accent);color:white}.home h2 a{text-decoration:none}.home .intro{text-wrap:pretty}
 
-/* One original math input is one native selection unit. Keep equation rows,
-   numbers and surrounding prose outside it; retain native touch gestures. */
-article :is(.rendered-math,.fallback-math,.semantic-unit){
-  -webkit-user-select:all;
-  user-select:all;
-}
-
 /* Reader preferences affect prose; math fonts and original figure colors stay intact. */
 :root{--reader-default-size:19px;--reader-line-height:1.72;--reader-text-font:'STIX Two Text',Georgia,serif;--surface:#efebe4;--control-border:#8b8378;--control:#efebe4;--selected:#ddd6c8;--notice:#efebe4;--fallback:#8b8378}
 :root[data-reader-font="sans"]{--reader-text-font:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}

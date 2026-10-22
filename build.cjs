@@ -15,7 +15,8 @@ const sha256 = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 const readerSettingsVersion = sha256(fs.readFileSync('settings.js')).slice(0,12);
 const readerHeaderVersion = sha256(fs.readFileSync('header-scroll.js')).slice(0,12);
 const readerTocVersion = sha256(fs.readFileSync('toc.js')).slice(0,12);
-const readerCopyVersion = sha256(fs.readFileSync('copy-math.js')).slice(0,12);
+const copyTexPath = require.resolve('katex/dist/contrib/copy-tex.min.js');
+const readerCopyVersion = sha256(fs.readFileSync(copyTexPath)).slice(0,12);
 const readerCssVersion = sha256(fs.readFileSync('reader.css')).slice(0,12);
 const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const copy = (from, to) => { fs.mkdirSync(path.dirname(to), {recursive:true}); fs.copyFileSync(from, to); };
@@ -118,7 +119,7 @@ for (const paper of provenance) {
   const report = require('./math-renderer.cjs')(document,article,paper);
   if (report.mathCount !== paper.mathCount) throw new Error(`Math count changed: ${paper.slug}`);
   const notice = paper.slug === 'matsuda' ? '<p class="notice edition-note">HTML based on <a href="https://arxiv.org/abs/2501.10710v2">arXiv:2501.10710v2</a> (11 September 2025), including supplementary material. · <a href="https://doi.org/10.1103/xw1s-dt16">Published article: Physical Review Research 8, L012003 (2026)</a>.</p>' : '';
-  const output = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="${escape(title)}. Responsive reading edition with build-time mathematics."><title>${escape(title)}</title><link rel="stylesheet" href="assets/reader.css?v=${readerCssVersion}"><link rel="stylesheet" href="assets/katex/katex.min.css"><script src="assets/settings.js?v=${readerSettingsVersion}"></script><script src="assets/anchor.js" defer></script><script src="assets/toc.js?v=${readerTocVersion}" defer></script><script src="assets/header-scroll.js?v=${readerHeaderVersion}" defer></script><script src="assets/copy-math.js?v=${readerCopyVersion}" defer></script></head><body><header class="topbar reader-topbar">${tocMarkup}<nav><a href="https://arxiv.org/abs/${paper.arxivId}">arXiv</a>${settingsMarkup}</nav></header><div class="layout"><aside aria-label="On this page"><a class="all-papers-link" href="index.html">← Research Portfolio</a><div class="eyebrow">ON THIS PAGE</div>${nav}<a href="#top">Back to top ↑</a></aside><main id="top">${notice}${article.outerHTML}<footer><p><a class="all-papers-link" href="index.html">← Research Portfolio</a></p>Content and figures from <a href="${paper.url}">arXiv ${paper.arxivId}</a>. Original authors retain their rights. Presentation changed; scientific text and units preserved. <a href="NOTICE.md">Rights and notices</a>.</footer></main></div></body></html>\n`;
+  const output = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="${escape(title)}. Responsive reading edition with build-time mathematics."><title>${escape(title)}</title><link rel="stylesheet" href="assets/reader.css?v=${readerCssVersion}"><link rel="stylesheet" href="assets/katex/katex.min.css"><script src="assets/settings.js?v=${readerSettingsVersion}"></script><script src="assets/anchor.js" defer></script><script src="assets/toc.js?v=${readerTocVersion}" defer></script><script src="assets/header-scroll.js?v=${readerHeaderVersion}" defer></script><script src="assets/katex/copy-tex.min.js?v=${readerCopyVersion}" defer></script></head><body><header class="topbar reader-topbar">${tocMarkup}<nav><a href="https://arxiv.org/abs/${paper.arxivId}">arXiv</a>${settingsMarkup}</nav></header><div class="layout"><aside aria-label="On this page"><a class="all-papers-link" href="index.html">← Research Portfolio</a><div class="eyebrow">ON THIS PAGE</div>${nav}<a href="#top">Back to top ↑</a></aside><main id="top">${notice}${article.outerHTML}<footer><p><a class="all-papers-link" href="index.html">← Research Portfolio</a></p>Content and figures from <a href="${paper.url}">arXiv ${paper.arxivId}</a>. Original authors retain their rights. Presentation changed; scientific text and units preserved. <a href="NOTICE.md">Rights and notices</a>.</footer></main></div></body></html>\n`;
   fs.writeFileSync(`docs/${paper.slug}.html`, output);
   reports.push(report);
 }
@@ -127,13 +128,15 @@ copy('reader.css', 'docs/assets/reader.css');
 copy('anchor.js', 'docs/assets/anchor.js');
 copy('toc.js', 'docs/assets/toc.js');
 copy('header-scroll.js', 'docs/assets/header-scroll.js');
-copy('copy-math.js', 'docs/assets/copy-math.js');
+copy(copyTexPath, 'docs/assets/katex/copy-tex.min.js');
+// Remove the retired custom clipboard handler from incremental builds.
+fs.rmSync('docs/assets/copy-math.js', {force:true});
 copy('settings.js', 'docs/assets/settings.js');
 fs.writeFileSync('docs/index.html', fs.readFileSync('index.html', 'utf8').replace('<!-- reader-settings -->', settingsMarkup).replace('assets/reader.css', `assets/reader.css?v=${readerCssVersion}`).replace('assets/settings.js', `assets/settings.js?v=${readerSettingsVersion}`));
 copy('NOTICE.md', 'docs/NOTICE.md');
 copy('sources/figure-layout.json', 'docs/figure-layout.json');
 copy('sources/table-layout.json', 'docs/table-layout.json');
-// Ship CSS and WOFF2 fonts only. KaTeX itself runs only in Node during build.
+// KaTeX rendering runs only at build time; the official copy-tex extension runs in the browser.
 let katexCss = fs.readFileSync('node_modules/katex/dist/katex.min.css', 'utf8');
 katexCss = katexCss.replace(/src:([^;}]+)/g, (_, value) => {
   const woff2 = value.match(/url\([^)]*\.woff2\) format\(["']?woff2["']?\)/);

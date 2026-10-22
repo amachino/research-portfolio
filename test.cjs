@@ -139,7 +139,7 @@ for (const [file, document] of documents) {
       }
     }
   }
-  for (const script of document.querySelectorAll('script')) assert(['assets/anchor.js','assets/settings.js','assets/toc.js','assets/header-scroll.js','assets/copy-math.js'].includes(script.getAttribute('src').split('?')[0]), `${file}: unexpected script`);
+  for (const script of document.querySelectorAll('script')) assert(['assets/anchor.js','assets/settings.js','assets/toc.js','assets/header-scroll.js','assets/katex/copy-tex.min.js'].includes(script.getAttribute('src').split('?')[0]), `${file}: unexpected script`);
   assert.equal(document.querySelectorAll('script[src^="assets/settings.js"]').length, 1, `${file}: reading preferences script`);
   assert.equal(document.getElementById('reader-settings').tagName.toLowerCase(), 'dialog', `${file}: native settings dialog`);
   assert.equal(document.querySelector('.reader-settings-help').textContent,'Preferences are saved in this browser.');
@@ -238,7 +238,7 @@ for (const paper of provenance) {
   assert.equal(output.querySelectorAll('#reader-toc-open').length, 1);
   assert.equal(output.querySelectorAll('#reader-toc nav a[href^="#"]').length, output.querySelectorAll('article h2,article h3').length);
   assert.equal(output.querySelectorAll('script[src^="assets/toc.js?v="]').length, 1);
-  const copyScripts = output.querySelectorAll(`script[src="assets/copy-math.js?v=${sha256(fs.readFileSync('copy-math.js')).slice(0,12)}"]`);
+  const copyScripts = output.querySelectorAll(`script[src="assets/katex/copy-tex.min.js?v=${sha256(fs.readFileSync(require.resolve('katex/dist/contrib/copy-tex.min.js'))).slice(0,12)}"]`);
   assert.equal(copyScripts.length, 1, 'Each paper loads the versioned source-TeX copy handler once');
   assert(copyScripts[0].hasAttribute('defer'));
   assert.equal(output.querySelectorAll('figure.table-single').length, ({bswap:3,qubex:2,matsuda:1})[paper.slug]);
@@ -302,8 +302,12 @@ console.log(JSON.stringify({passed:true, pages:stats, math:audit.total, checks:[
 
 // Preferences have standalone source-level tests; generated controller must match.
 assert.equal(fs.readFileSync('docs/assets/settings.js','utf8'), fs.readFileSync('settings.js','utf8'));
-assert.equal(fs.readFileSync('docs/assets/copy-math.js','utf8'), fs.readFileSync('copy-math.js','utf8'));
-assert(!documents.get('index.html').querySelector('script[src^="assets/copy-math.js"]'), 'Article copy handler is not needed on the index');
+assert.equal(fs.readFileSync('docs/assets/katex/copy-tex.min.js','utf8'), fs.readFileSync(require.resolve('katex/dist/contrib/copy-tex.min.js'),'utf8'));
+assert(!documents.get('index.html').querySelector('script[src^="assets/katex/copy-tex.min.js"]'), 'Article copy handler is not needed on the index');
+assert(!/user-select\s*:\s*all/.test(readerCss), 'Native math selection is not forced atomic');
+for (const html of documents.values()) assert(!html.querySelector('script[src*="paragraph-select"],script[src*="copy-math"]'));
+assert(!fs.existsSync('docs/assets/copy-math.js'));
+require('./copy-tex-test.cjs');
 require('./settings-test.cjs');
 
 for (const name of expectedPages) { const html = fs.readFileSync('docs/'+name,'utf8'); assert(!/Paper Atelier|PAPER ATELIER|PHYSICS, WITH ROOM|Made for reading/.test(html), 'No promotional branding: '+name); }
