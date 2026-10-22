@@ -3,12 +3,12 @@
 // require the separate real-browser check after publication.
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
-const path = require('node:path');
 const vm = require('node:vm');
 const {parseHTML} = require('linkedom');
-const script = fs.readFileSync(path.join(__dirname,'settings.js'),'utf8');
-const css = fs.readFileSync(path.join(__dirname,'reader.css'),'utf8');
-const markup = fs.readFileSync(path.join(__dirname,'settings.html'),'utf8');
+const reader = require('@amachino/leaf-reader/reader');
+const script = fs.readFileSync(reader.assetPath('settings.js'),'utf8');
+const css = fs.readFileSync(reader.assetPath('reader.css'),'utf8');
+const markup = fs.readFileSync(reader.assetPath('settings.html'),'utf8');
 assert(!/fetch\s*\(|XMLHttpRequest|sendBeacon|document\.cookie/.test(script));
 const dom = parseHTML(markup).document;
 assert.equal(dom.querySelector('dialog').getAttribute('aria-labelledby'),'reader-settings-title');

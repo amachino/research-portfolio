@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const { parseHTML } = require('linkedom');
-const katex = require('katex');
+const reader = require('@amachino/leaf-reader/reader');
 const root = __dirname;
 process.chdir(root);
 const {initializeUrls, redirectPage, updateIndexLinks} = require('./paper-urls.cjs');
@@ -15,27 +15,12 @@ if (registry.changed) fs.writeFileSync(registryPath, JSON.stringify(provenance, 
 const tableLayout = JSON.parse(fs.readFileSync('sources/table-layout.json', 'utf8'));
 const figureLayout = JSON.parse(fs.readFileSync('sources/figure-layout.json', 'utf8'));
 const reports = [];
-const settingsMarkup = fs.readFileSync('settings.html', 'utf8').trim();
+const readerVersions = reader.writeAssets(path.resolve(root, 'docs/assets'));
+const settingsMarkup = fs.readFileSync(reader.assetPath('settings.html'), 'utf8').trim();
 const sha256 = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
-const readerSettingsVersion = sha256(fs.readFileSync('settings.js')).slice(0,12);
-const readerHeaderVersion = sha256(fs.readFileSync('header-scroll.js')).slice(0,12);
-const readerTocVersion = sha256(fs.readFileSync('toc.js')).slice(0,12);
-const copyTexPath = require.resolve('katex/dist/contrib/copy-tex.min.js');
-const readerCopyVersion = sha256(fs.readFileSync(copyTexPath)).slice(0,12);
-const readerCssVersion = sha256(fs.readFileSync('reader.css')).slice(0,12);
-const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const readerSettingsVersion = readerVersions['settings.js'];
+const readerCssVersion = readerVersions['reader.css'];
 const copy = (from, to) => { fs.mkdirSync(path.dirname(to), {recursive:true}); fs.copyFileSync(from, to); };
-
-// Keep protected numbering in both navigation variants without copying IDs or
-// making the heading title itself untranslatable. Escape all source text.
-const navigationLabel = heading => {
-  const tag = [...heading.children].find(child => child.classList.contains('ltx_tag'));
-  const title = heading.querySelector('.paper-heading-text');
-  if (tag?.getAttribute('translate') === 'no' && title) {
-    return `<span translate="no" class="notranslate">${escape(tag.textContent.trim())}</span> ${escape(title.textContent.trim())}`;
-  }
-  return escape(heading.textContent.trim());
-};
 
 // No downloads during a build. The immutable source figures live in docs so
 // they are versioned once, and are already at their final static asset URLs.
@@ -118,47 +103,24 @@ for (const paper of provenance) {
   const titleNode = article.querySelector('h1').cloneNode(true);
   for (const br of titleNode.querySelectorAll('br')) br.replaceWith(document.createTextNode(' '));
   const title = titleNode.textContent.replace(/\s+/g, ' ').trim();
-  const nav = [...article.querySelectorAll('h2')].filter(h => h.id || h.parentNode.id).map(h => `<a href="#${escape(h.id || h.parentNode.id)}">${navigationLabel(h)}</a>`).join('');
-  const tocLinks = [...article.querySelectorAll('h2,h3')].filter(h=>h.id||h.parentNode.id).map(h=>`<a class="toc-level-${h.tagName.toLowerCase()}" href="#${escape(h.id||h.parentNode.id)}">${navigationLabel(h)}</a>`).join('');
-  const tocMarkup = `<button type="button" class="reader-toc-trigger" id="reader-toc-open" aria-label="Open table of contents" aria-haspopup="dialog" aria-controls="reader-toc" aria-expanded="false" hidden><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M4 5h2M10 5h10M4 12h2M10 12h10M4 19h2M10 19h10" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button><dialog class="reader-toc-dialog" id="reader-toc" aria-labelledby="reader-toc-title"><div class="reader-toc-heading"><h2 id="reader-toc-title">Contents</h2><button type="button" id="reader-toc-close" autofocus>Close</button></div><nav aria-label="Table of contents"><a class="all-papers-link" href="index.html">← Research Portfolio</a>${tocLinks}</nav></dialog>`;
   const report = require('./math-renderer.cjs')(document,article,paper);
   if (report.mathCount !== paper.mathCount) throw new Error(`Math count changed: ${paper.slug}`);
   const notice = paper.slug === 'matsuda' ? '<p class="notice edition-note">HTML based on <a href="https://arxiv.org/abs/2501.10710v2">arXiv:2501.10710v2</a> (11 September 2025), including supplementary material. · <a href="https://doi.org/10.1103/xw1s-dt16">Published article: Physical Review Research 8, L012003 (2026)</a>.</p>' : '';
-  const output = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="${escape(title)}. Responsive reading edition with build-time mathematics."><title>${escape(title)}</title><link rel="stylesheet" href="assets/reader.css?v=${readerCssVersion}"><link rel="stylesheet" href="assets/katex/katex.min.css"><script src="assets/settings.js?v=${readerSettingsVersion}"></script><script src="assets/anchor.js" defer></script><script src="assets/toc.js?v=${readerTocVersion}" defer></script><script src="assets/header-scroll.js?v=${readerHeaderVersion}" defer></script><script src="assets/katex/copy-tex.min.js?v=${readerCopyVersion}" defer></script></head><body><header class="topbar reader-topbar">${tocMarkup}<nav><a href="https://arxiv.org/abs/${paper.arxivId}">arXiv</a>${settingsMarkup}</nav></header><div class="layout"><aside aria-label="On this page"><a class="all-papers-link" href="index.html">← Research Portfolio</a><div class="eyebrow">ON THIS PAGE</div>${nav}<a href="#top">Back to top ↑</a></aside><main id="top">${notice}${article.outerHTML}<footer><p><a class="all-papers-link" href="index.html">← Research Portfolio</a></p>Content and figures from <a href="${paper.url}">arXiv ${paper.arxivId}</a>. Original authors retain their rights. Presentation changed; scientific text and units preserved. <a href="NOTICE.md">Rights and notices</a>.</footer></main></div></body></html>\n`;
+  const output = reader.createPage({article,title,versions:readerVersions,
+    homeHref:'index.html',homeLabel:'Research Portfolio',
+    links:[{href:'https://arxiv.org/abs/'+paper.arxivId,label:'arXiv'}],noticeHtml:notice,
+    footerHtml:'<p><a class="all-papers-link" href="index.html">← Research Portfolio</a></p>Content and figures from <a href="'+paper.url+'">arXiv '+paper.arxivId+'</a>. Original authors retain their rights. Presentation changed; scientific text and units preserved. <a href="NOTICE.md">Rights and notices</a>.'});
   fs.writeFileSync(`docs/${paper.urlSlug}.html`, output);
   if (paper.urlSlug !== paper.slug) fs.writeFileSync(`docs/${paper.slug}.html`, redirectPage(paper));
   reports.push(report);
 }
 
-copy('reader.css', 'docs/assets/reader.css');
-copy('anchor.js', 'docs/assets/anchor.js');
+// Shared Leaf writes the reader UI, local fonts, official copy-tex and licenses.
 copy('paper-redirect.js', 'docs/assets/paper-redirect.js');
-copy('toc.js', 'docs/assets/toc.js');
-copy('header-scroll.js', 'docs/assets/header-scroll.js');
-copy(copyTexPath, 'docs/assets/katex/copy-tex.min.js');
-// Remove the retired custom clipboard handler from incremental builds.
-fs.rmSync('docs/assets/copy-math.js', {force:true});
-copy('settings.js', 'docs/assets/settings.js');
 fs.writeFileSync('docs/index.html', updateIndexLinks(fs.readFileSync('index.html', 'utf8'), provenance).replace('<!-- reader-settings -->', settingsMarkup).replace('assets/reader.css', `assets/reader.css?v=${readerCssVersion}`).replace('assets/settings.js', `assets/settings.js?v=${readerSettingsVersion}`));
 copy('NOTICE.md', 'docs/NOTICE.md');
 copy('sources/figure-layout.json', 'docs/figure-layout.json');
 copy('sources/table-layout.json', 'docs/table-layout.json');
-// KaTeX rendering runs only at build time; the official copy-tex extension runs in the browser.
-let katexCss = fs.readFileSync('node_modules/katex/dist/katex.min.css', 'utf8');
-katexCss = katexCss.replace(/src:([^;}]+)/g, (_, value) => {
-  const woff2 = value.match(/url\([^)]*\.woff2\) format\(["']?woff2["']?\)/);
-  if (!woff2) throw new Error('Expected WOFF2 source in KaTeX CSS');
-  return 'src:' + woff2[0];
-});
-fs.mkdirSync('docs/assets/katex/fonts', {recursive: true});
-fs.writeFileSync('docs/assets/katex/katex.min.css', katexCss);
-for (const match of katexCss.matchAll(/url\(([^)]*)\)/g)) {
-  const relative = match[1].replace(/["']/g, '');
-  copy(`node_modules/katex/dist/${relative}`, `docs/assets/katex/${relative}`);
-}
-for (const font of ['stix-two-text-latin-400-normal.woff2', 'stix-two-text-latin-400-italic.woff2', 'stix-two-text-latin-700-normal.woff2']) copy(`node_modules/@fontsource/stix-two-text/files/${font}`, `docs/assets/fonts/${font}`);
-copy('node_modules/@fontsource/stix-two-math/files/stix-two-math-latin-400-normal.woff2', 'docs/assets/fonts/stix-two-math-latin-400-normal.woff2');
-for (const [source, name] of [['katex/LICENSE', 'KaTeX'], ['@fontsource/stix-two-text/LICENSE', 'STIX-Two-Text'], ['@fontsource/stix-two-math/LICENSE', 'STIX-Two-Math']]) copy(`node_modules/${source}`, `docs/assets/LICENSE-${name}.txt`);
 fs.writeFileSync('docs/.nojekyll', '');
 fs.writeFileSync('docs/math-audit.json', JSON.stringify({renderer: 'KaTeX 0.19.0 (JavaScript, build time)', input: 'Versioned arXiv HTML article snapshots and their original TeX annotations', papers: reports, total: {math: reports.reduce((n, p) => n + p.mathCount, 0), converted: reports.reduce((n, p) => n + p.converted, 0), repaired: reports.reduce((n, p) => n + p.repaired, 0), nativeFallbacks: reports.reduce((n, p) => n + p.nativeFallbacks, 0), semanticUnits: reports.reduce((n,p)=>n+p.semanticUnits,0)}}, null, 2) + '\n');
 console.log(reports.map(({paper, mathCount, converted, repaired, nativeFallbacks}) => ({paper, mathCount, converted, repaired, nativeFallbacks})));

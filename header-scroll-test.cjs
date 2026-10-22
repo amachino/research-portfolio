@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
 const {parseHTML} = require('linkedom');
-const script = fs.readFileSync('header-scroll.js','utf8');
+const script = fs.readFileSync(require('@amachino/leaf-reader/reader').assetPath('header-scroll.js'),'utf8');
 function harness() {
   const events = {}, headerEvents = {}, mediaEvents = {}, classes = new Set();
   const dialogEvents = {}; let frame, mutation, resize;
@@ -46,7 +46,7 @@ for(const paper of JSON.parse(fs.readFileSync('sources/provenance.json','utf8'))
 }
 const index=parseHTML(fs.readFileSync('docs/index.html','utf8')).document;
 assert(!index.querySelector('.reader-topbar,script[src^="assets/header-scroll.js"]'),'homepage unchanged');
-const css=fs.readFileSync('reader.css','utf8');
+const css=fs.readFileSync(require('@amachino/leaf-reader/reader').assetPath('reader.css'),'utf8');
 assert(css.includes('.reader-topbar{position:sticky;top:0;'));
 assert(css.includes('@media(prefers-reduced-motion:reduce){.reader-topbar{transition:none}}'));
 assert(!/fetch\s*\(|localStorage|preventDefault|aria-hidden|inert/.test(script));

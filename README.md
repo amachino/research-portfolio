@@ -1,6 +1,6 @@
 # Research portfolio
 
-Personal research site: [published portfolio](https://amachino.github.io/research-portfolio/). The shared reader is planned as a separate project; extraction and its public name are not yet decided.
+Personal research site: [published portfolio](https://amachino.github.io/research-portfolio/). The reader UI, assets and mathematics engine come from the shared Leaf package. This repository owns the portfolio homepage, paper registry, source snapshots and paper-specific presentation adapters.
 
 Start/resume work: [STATUS](STATUS.md). Product direction: [PRODUCT](PRODUCT.md), [ROADMAP](ROADMAP.md), [ARCHITECTURE](ARCHITECTURE.md). Individual tasks and progress live in the maintainer's task tracker; draft PRs review code changes.
 
@@ -30,7 +30,9 @@ npm run build
 npm test
 ```
 
-All direct dependency versions are exact, and `package-lock.json` pins the transitive graph with integrity hashes. A build needs no network once dependencies are installed. It reads versioned article snapshots and validates their SHA-256 hashes and all figure hashes. There are no timestamps in generated output, so repeated builds from identical inputs produce identical bytes.
+Registry dependencies use exact versions and integrity hashes; `@amachino/leaf-reader` is pinned to a full Git commit in `package.json` and `package-lock.json`. Installing it requires SSH read access to the private Leaf repository. A build needs no network once dependencies are installed. It reads versioned article snapshots and validates their SHA-256 hashes and all figure hashes. There are no timestamps in generated output, so repeated builds from identical inputs produce identical bytes.
+
+The reader shell and assets are emitted by Leaf's `createPage` and `writeAssets`; the mathematics adapters call its shared engine. The former root-level reader UI files remain for comparison but are not consumed by the build or tests. Generated browser assets are committed under `docs`; no Leaf source tarball is included.
 
 The original paper figures are versioned once under `docs/assets/figures/`, at their final served paths. These are source inputs: do not delete that directory as a build-clean step. Fonts, stylesheets, licenses, pages, and the audit are generated or copied from source/dependencies by `npm run build`.
 
@@ -120,5 +122,5 @@ PDF, binary and output hashes are recorded in `sources/provenance.json`, and
 the earlier PNGs remain available at their original URLs. Figure 14 remains
 the original PNG photograph; Figure 18 remains an HTML table. The remaining
 figures, source HTML, numbering, captions and links are unchanged. This bounded
-asset update does not adopt the pending Leaf graphics adapter or migrate the
-reader package.
+asset update is independent of the shared reader migration; figure conversion
+remains separate from the reader build.

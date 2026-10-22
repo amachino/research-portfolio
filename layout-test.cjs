@@ -1,7 +1,7 @@
 'use strict';
 const fs = require('node:fs');
 const assert = require('node:assert/strict');
-const css = fs.readFileSync(require('node:path').join(__dirname, 'reader.css'), 'utf8');
+const css = fs.readFileSync(require('@amachino/leaf-reader/reader').assetPath('reader.css'), 'utf8');
 assert(css.includes('article{container-name:reader;container-type:inline-size}'));
 const queries = [...css.matchAll(/@container reader \(min-width:calc\((\d+)em \+ (\d+)px\)\)/g)];
 assert.equal(queries.length, 4, 'Figures, pair wrappers/cells, and tables share the same gate');

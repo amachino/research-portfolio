@@ -303,7 +303,7 @@ for (const license of ['KaTeX','STIX-Two-Text','STIX-Two-Math']) assert(fs.statS
 console.log(JSON.stringify({passed:true, pages:stats, math:audit.total, checks:['all local assets, links and fragments','unique and preserved source IDs','all original scientific prose and TeX annotations','11 generic structural compatibility repairs and 1 isolated legacy layout adapter','3 semantic unit normalizations with unchanged original MathML','45 byte-identical figures with intrinsic dimensions','mobile typography rules and upright citations','four content pages plus three compatibility redirects']}, null, 2));
 
 // Preferences have standalone source-level tests; generated controller must match.
-assert.equal(fs.readFileSync('docs/assets/settings.js','utf8'), fs.readFileSync('settings.js','utf8'));
+assert.equal(fs.readFileSync('docs/assets/settings.js','utf8'), fs.readFileSync(require('@amachino/leaf-reader/reader').assetPath('settings.js'),'utf8'));
 assert.equal(fs.readFileSync('docs/assets/katex/copy-tex.min.js','utf8'), fs.readFileSync(require.resolve('katex/dist/contrib/copy-tex.min.js'),'utf8'));
 assert(!documents.get('index.html').querySelector('script[src^="assets/katex/copy-tex.min.js"]'), 'Article copy handler is not needed on the index');
 assert(!/user-select\s*:\s*all/.test(readerCss), 'Native math selection is not forced atomic');

@@ -152,8 +152,7 @@ body:has(.reader-topbar) aside{top:calc(var(--reader-header-height,52px) + 8px);
 /* Protected numbering stays intact beside wrapping mobile TOC labels. */
 .reader-toc-dialog nav a>.notranslate{flex:none;white-space:nowrap;margin-right:.35em}
 
-/* Numbered references keep wrapped lines clear of the original labels. */
+.edition-note{hyphens:none}
+/* Keep bibliography labels in a gutter; inline bibblocks share one wrapping body. */
 .ltx_bibitem:has(>.ltx_tag_bibitem){position:relative;padding-inline-start:3em}
 .ltx_bibitem>.ltx_tag_bibitem{position:absolute;inset-inline-start:0;inset-block-start:0;max-width:2.5em}
-
-.edition-note{hyphens:none}
