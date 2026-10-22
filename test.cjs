@@ -42,7 +42,7 @@ assert.equal(cards.length, 3);
 for (const card of cards) {
   assert.equal(card.querySelector('.paper-authors').getAttribute('translate'), 'no');
   assert.equal(card.querySelector('.paper-authors strong').textContent, 'Akinori Machino');
-  assert.match(card.querySelector('.paper-authors strong').getAttribute('style'), /text-decoration:underline/);
+  assert.equal(card.querySelector('.paper-authors strong').getAttribute('style'), null, 'Author emphasis uses bold only');
   assert(!card.querySelector('.paper-authors').textContent.includes('et al.'), 'All authors are shown');
   assert.equal(card.querySelector('time').getAttribute('datetime'), '2026');
   assert.match(card.querySelector('.paper-meta').textContent, /arXiv preprint|Physical Review Research/);
