@@ -9,8 +9,10 @@ const sha256 = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 const provenance = JSON.parse(fs.readFileSync('sources/provenance.json', 'utf8'));
 const repairs = JSON.parse(fs.readFileSync('sources/math-repairs.json', 'utf8'));
 const audit = JSON.parse(fs.readFileSync('docs/math-audit.json', 'utf8'));
-const expectedPages = ['bswap.html', 'index.html', 'matsuda.html', 'qubex.html'];
-assert.deepEqual(fs.readdirSync('docs').filter(f => f.endsWith('.html')).sort(), expectedPages, 'Only four public HTML pages');
+const pageFor = slug => `${provenance.find(p => p.slug === slug).urlSlug}.html`;
+const expectedPages = ['index.html', ...provenance.map(p => `${p.urlSlug}.html`)].sort();
+const allPages = [...new Set([...expectedPages, ...provenance.map(p => `${p.slug}.html`)])].sort();
+assert.deepEqual(fs.readdirSync('docs').filter(f => f.endsWith('.html')).sort(), allPages, 'Only portfolio, three reading editions, and compatibility redirects');
 const documents = new Map(expectedPages.map(file => [file, parseHTML(fs.readFileSync('docs/' + file, 'utf8')).document]));
 const index = documents.get('index.html');
 // Individual reading editions stay crawlable but are excluded from search indexes.
@@ -18,7 +20,7 @@ const index = documents.get('index.html');
 assert.equal(index.querySelector('meta[name="robots"]'), null, 'Homepage remains indexable');
 assert(!fs.existsSync('docs/robots.txt'), 'Do not block crawling needed to discover noindex');
 for (const paper of provenance) {
-  const page = documents.get(`${paper.slug}.html`);
+  const page = documents.get(pageFor(paper.slug));
   const robots = [...page.querySelectorAll('meta[name="robots"]')];
   assert.equal(robots.length, 1, `${paper.slug}: exactly one robots directive`);
   assert.equal(robots[0].getAttribute('content'), 'noindex', `${paper.slug}: individual paper excluded from search`);
@@ -180,7 +182,7 @@ for (const paper of provenance) {
   const sourceBytes = fs.readFileSync(paper.snapshot);
   assert.equal(sha256(sourceBytes), paper.snapshotSha256, `${paper.slug}: source integrity`);
   const source = parseHTML(sourceBytes.toString()).document;
-  const output = documents.get(`${paper.slug}.html`);
+  const output = documents.get(pageFor(paper.slug));
   const report = audit.papers.find(p => p.paper === paper.slug);
   const header = require('./header-format.cjs').manifests[paper.slug];
   const normalized = node => node.textContent.replace(/\s+/g, ' ').trim();
@@ -298,7 +300,7 @@ assert(readerCss.includes('cite.ltx_cite{font-style:normal}'), 'Numeric citation
 assert(readerCss.includes('@media(max-width:350px){article section > .ltx_para > p.ltx_p{text-align:start}}'), 'Smallest viewport prose start-aligned');
 assert(readerCss.includes('p.ltx_p{text-align:justify;'), 'Desktop prose justified');
 for (const license of ['KaTeX','STIX-Two-Text','STIX-Two-Math']) assert(fs.statSync(`docs/assets/LICENSE-${license}.txt`).size > 500);
-console.log(JSON.stringify({passed:true, pages:stats, math:audit.total, checks:['all local assets, links and fragments','unique and preserved source IDs','all original scientific prose and TeX annotations','11 generic structural compatibility repairs and 1 isolated legacy layout adapter','3 semantic unit normalizations with unchanged original MathML','45 byte-identical figures with intrinsic dimensions','mobile typography rules and upright citations','four-page public boundary']}, null, 2));
+console.log(JSON.stringify({passed:true, pages:stats, math:audit.total, checks:['all local assets, links and fragments','unique and preserved source IDs','all original scientific prose and TeX annotations','11 generic structural compatibility repairs and 1 isolated legacy layout adapter','3 semantic unit normalizations with unchanged original MathML','45 byte-identical figures with intrinsic dimensions','mobile typography rules and upright citations','four content pages plus three compatibility redirects']}, null, 2));
 
 // Preferences have standalone source-level tests; generated controller must match.
 assert.equal(fs.readFileSync('docs/assets/settings.js','utf8'), fs.readFileSync('settings.js','utf8'));
@@ -317,15 +319,15 @@ for (const file of expectedPages) {
  assert(/assets\/reader\.css\?v=[a-f0-9]{12}/.test(html), `${file}: CSS must be content-versioned`);
 }
 
-for (const file of ["bswap.html","qubex.html"]) {
+for (const file of [pageFor("bswap"),pageFor("qubex")]) {
  const {document}=parseHTML(fs.readFileSync(`docs/${file}`,"utf8"));
- const other=file==="bswap.html"?"qubex.html":"bswap.html";
+ const other=file===pageFor("bswap")?pageFor("qubex"):pageFor("bswap");
  assert(![...document.querySelectorAll(".topbar a")].some(a=>a.getAttribute("href")===other), `${file}: no cross-paper navigation`);
 }
 
 assert.deepEqual(audit.papers.map(p=>p.layoutAdjustments.length), [47,1,0]);
 for(const paper of audit.papers){
- const doc=documents.get(`${paper.paper}.html`);
+ const doc=documents.get(pageFor(paper.paper));
  for(const item of paper.layoutAdjustments){
   const node=doc.getElementById(item.id);
   assert(node.classList.contains('relation-start'));
@@ -335,7 +337,7 @@ for(const paper of audit.papers){
 assert(readerCss.includes('article .katex{text-align-last:auto}'));
 
 for (const [paper,singles,wides] of [['bswap',15,3],['qubex',15,4],['matsuda',2,6]]) {
- const doc=documents.get(`${paper}.html`);
+ const doc=documents.get(pageFor(paper));
  assert.equal(doc.querySelectorAll('figure.figure-single').length,singles);
  assert.equal(doc.querySelectorAll('figure.figure-wide').length,wides);
  assert.equal(doc.querySelectorAll('figure.figure-pair').length,paper==='bswap'?3:0);
@@ -347,8 +349,8 @@ require('./layout-test.cjs');
 
 require('./header-scroll-test.cjs');
 
-const matsuda = documents.get('matsuda.html');
-assert.equal(cards[2].querySelector('a[href="matsuda.html"]').textContent, 'HTML');
+const matsuda = documents.get(pageFor('matsuda'));
+assert.equal(cards[2].querySelector(`a[href="${pageFor('matsuda')}"]`).textContent, 'HTML');
 assert(matsuda.querySelector('.notice.edition-note').textContent.includes('HTML based on'));
 assert(!matsuda.querySelector('.edition-note').textContent.includes('not the publisher'));
 assert.equal(matsuda.querySelectorAll('.ltx_role_thanks').length, 2);
@@ -375,7 +377,7 @@ for (const card of cards) assert.equal(card.querySelector('.paper-links a[href$=
 assert.equal(index.querySelectorAll('.paper-links a').length, 7);
 for (const a of index.querySelectorAll('.paper-links a')) assert.notEqual(a.textContent, "PDF");
 for (const slug of ["bswap", "qubex", "matsuda"]) {
- const nav=documents.get(`${slug}.html`).querySelector(".topbar > nav");
+ const nav=documents.get(pageFor(slug)).querySelector(".topbar > nav");
  assert.equal(nav.querySelectorAll('a[href*="/pdf/"]').length,0);
  assert(nav.querySelector('a[href^="https://arxiv.org/abs/"]'));
 }

@@ -145,7 +145,8 @@
         "file": "assets/figures/bswap-fig18.svg",
         "sha256": "55264ae388418ef7854f8715997eaa51927d0890a840d75eb9f74eb61972a3e9"
       }
-    ]
+    ],
+    "urlSlug": "zz-free-bswap-gates-under-strong-driving-in-far-detuned-fixed-frequency-transmons"
   },
   {
     "slug": "qubex",
@@ -348,7 +349,8 @@
         "file": "assets/figures/qubex-cryostat-wiring.svg",
         "sha256": "87c9d44f21e6f067e9eaaa7fa7f8252a6243907e09689d060f01cac614435539"
       }
-    ]
+    ],
+    "urlSlug": "qube-qubex-an-integrated-hardware-software-system-for-superconducting-qubit-experiments-with-broadband-control"
   },
   {
     "slug": "matsuda",
@@ -402,6 +404,7 @@
         "file": "assets/figures/matsuda-DetailedWiring.jpg",
         "sha256": "674076537e5f8a8ad2c1ca0d308bc1a41801743eb5b3d4155774457011b48dd5"
       }
-    ]
+    ],
+    "urlSlug": "selective-excitation-of-superconducting-qubits-with-a-shared-control-line-through-pulse-shaping"
   }
 ]

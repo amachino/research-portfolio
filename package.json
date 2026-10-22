@@ -10,7 +10,7 @@
   },
   "scripts": {
     "build": "node build.cjs",
-    "test": "node test.cjs && node semantic-units-test.cjs && PAPER_READER_CORPUS=. node --test math-compat.test.cjs",
+    "test": "node paper-urls-test.cjs && node test.cjs && node semantic-units-test.cjs && PAPER_READER_CORPUS=. node --test math-compat.test.cjs",
     "manifest": "node scripts/manifest.cjs"
   },
   "dependencies": {

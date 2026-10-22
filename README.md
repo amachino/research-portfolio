@@ -7,9 +7,10 @@ Start/resume work: [STATUS](STATUS.md). Product direction: [PRODUCT](PRODUCT.md)
 Three responsive reading editions of quantum computing papers, with JavaScript KaTeX run **at build time**. The public site contains only an index and the recommended reader for each paper:
 
 - `docs/index.html`
-- `docs/bswap.html`
-- `docs/qubex.html`
-- `docs/matsuda.html` (arXiv v2, including supplementary material; not the publisher’s version of record)
+- Three title-derived `.html` reading editions (URLs are recorded as `urlSlug` in `sources/provenance.json`)
+- Compatibility redirect pages at `docs/bswap.html`, `docs/qubex.html`, and `docs/matsuda.html`
+
+The Matsuda edition remains arXiv v2, including supplementary material; it is not the publisher’s version of record.
 
 No client-side math renderer, analytics, CDN, or runtime service is required. Appearance settings offer STIX serif or the system sans-serif font, exactly three responsive text sizes (Small/Medium/Large), and Light/Dark themes. On phones the sizes are 14.5/17/20 px with line heights 1.25/1.45/1.55; desktop sizes are 19/22/25 px (Small is 18 px on intermediate screens). Native radio controls sit in a modal dialog presented as a phone bottom sheet. Original scientific figure colors are preserved on white panels. Valid earlier numeric preferences migrate to the closest preset. Preferences are shared across the papers using only localStorage in the same browser; Reset restores Small, Serif, and Light defaults. Browser zoom remains enabled. The math fonts are unchanged, with inline math inheriting the surrounding text size. No preference is transmitted.
 
@@ -35,6 +36,32 @@ The original paper figures are versioned once under `docs/assets/figures/`, at t
 
 For local review, serve `docs` with any static HTTP server, for example `python3 -m http.server 8000 --directory docs`.
 
+## Stable title-based URLs
+
+`slug` remains the internal paper identifier used by math repairs, figures, and
+header/layout metadata. A separate `urlSlug` identifies its public `.html` URL.
+For a newly registered paper with no `urlSlug`, `npm run build` reads the source
+article title, lowercases it, folds Latin accents, and joins words with hyphens.
+It retains the complete title and saves the generated value in
+`sources/provenance.json`. Commit that metadata with the new article. Later
+builds reuse the saved value; editing a title does not change the URL. A title
+that cannot produce an ASCII slug, or one exceeding the filename limit, requires
+an explicit reviewed `urlSlug` rather than silent truncation.
+
+All public routes and internal-ID aliases are validated together before output
+is written. Duplicate URLs, collisions with the home page or another paper’s
+alias, and unsafe paths fail with a diagnostic instead of overwriting a page.
+Do not rename an already published `urlSlug` without an explicit migration.
+
+The old `bswap.html`, `qubex.html`, and `matsuda.html` URLs are small `noindex`
+compatibility pages, not duplicate articles. Their local script uses
+`location.replace` to retain the complete query and fragment while navigating
+to the new URL without adding a Back-button loop. Static GitHub Pages cannot
+supply custom per-path HTTP redirects here; with JavaScript disabled, a normal
+article link is available instead. No canonical override is added. The home
+page remains indexable and its HTML links point directly to the new URLs.
+QCE conference bibliographic metadata still has no HTML reading edition.
+
 ## Input and rendering provenance
 
 This is an **arXiv HTML → build-time KaTeX → static HTML** pipeline. It does not compile the authors' LaTeX projects. `sources/bswap.html`, `sources/qubex.html`, and `sources/matsuda.html` are article-only snapshots extracted from the versioned public arXiv HTML; `sources/provenance.json` records source URLs, hashes, license labels, and immutable figure mappings. Source scientific text and units are not edited.
@@ -46,7 +73,7 @@ KaTeX consumes each original TeX annotation. Two conservative structural compati
 - Matsuda: 204 expressions, 202 KaTeX renders, 0 repairs, 2 original native MathML fallbacks for unsupported color macros
 - Total: 1,424 expressions, 1,419 KaTeX renders, 12 repairs, 3 semantic HTML unit normalizations, 2 native fallbacks
 
-Counts demonstrate conversion coverage, not mathematical or cross-browser visual equivalence. Native MathML appearance remains browser-dependent. The test suite checks local links/assets/fragments, duplicate and preserved IDs, source text and all original TeX annotations, figure integrity/intrinsics, exact math counts, repairs, fallback preservation, and the four-page publish boundary.
+Counts demonstrate conversion coverage, not mathematical or cross-browser visual equivalence. Native MathML appearance remains browser-dependent. The test suite checks local links/assets/fragments, duplicate and preserved IDs, source text and all original TeX annotations, figure integrity/intrinsics, exact math counts, repairs, fallback preservation, and the four-content-page plus three-redirect publication boundary.
 
 ## GitHub Pages
 

@@ -39,8 +39,8 @@ h.media.matches=true;h.scroll(1100);assert(h.hidden());
 h.state.height=80;h.resize();assert(!h.hidden());assert.equal(h.root.style['--reader-header-height'],'80px');
 h.scroll(-20);assert(!h.hidden(),'top overscroll clamped');h.scroll(4200);assert(h.hidden());h.scroll(4300);h.scroll(4200);assert(h.hidden(),'bottom bounce does not reveal');
 h.events.pageshow();assert(!h.hidden(),'history restore visible');
-for(const paper of ['bswap','qubex','matsuda']){
-  const doc=parseHTML(fs.readFileSync(`docs/${paper}.html`,'utf8')).document;
+for(const paper of JSON.parse(fs.readFileSync('sources/provenance.json','utf8'))){
+  const doc=parseHTML(fs.readFileSync(`docs/${paper.urlSlug}.html`,'utf8')).document;
   assert(doc.querySelector('.reader-topbar'));
   assert.equal(doc.querySelectorAll('script[src^="assets/header-scroll.js?v="]').length,1);
 }
